@@ -1,11 +1,11 @@
 /*  NAME:
-        E3System.h
+        E3SDLStackCrawl.c
 
     DESCRIPTION:
-        Header file for E3System.c.
+        Stack crawl utilities.
 
     COPYRIGHT:
-        Copyright (c) 1999-2007, Quesa Developers. All rights reserved.
+        Copyright (c) 1999-2004, Quesa Developers. All rights reserved.
 
         For the current release of Quesa, please see:
 
@@ -38,104 +38,68 @@
         LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
         NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
         SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+		
     ___________________________________________________________________________
 */
-#ifndef E3SYSTEM_HDR
-#define E3SYSTEM_HDR
 //=============================================================================
-//		Include files
+//      Include files
 //-----------------------------------------------------------------------------
-
-
-
-
-
-//=============================================================================
-//		C++ preamble
-//-----------------------------------------------------------------------------
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "E3StackCrawl.h"
 
 
 
 
 
 //=============================================================================
-//      Macros
+//      Public functions
 //-----------------------------------------------------------------------------
-// E3System_Bottleneck
-//
-// Invoked on every API entry point to allow us to perform system housekeeping.
-// To minimise the performance impact, the bottleneck is implemented as a macro
-// which polls a global then invokes a real function if there is any work to do.
-#define E3System_Bottleneck()													\
-				do																\
-					{															\
-					if (gE3Globals.systemDoBottleneck)							\
-						E3System_ClearBottleneck();								\
-					}															\
-				while (0)
-
-
-
-
-
-//=============================================================================
-//      Function prototypes
+//      E3StackCrawl_New:	Create a stack crawl record for the caller of this.
 //-----------------------------------------------------------------------------
-// Cross platform
-TQ3Status	E3System_Initialise(void);
-void		E3System_Terminate(void);
-void		E3System_LoadPlugins(void);
-void		E3System_UnloadPlugins(void);
-void		E3System_ClearBottleneck(void);
-
-
-// Mac specific
-#if QUESA_OS_MACINTOSH
-TQ3Status	E3MacSystem_Initialise(void);
-void		E3MacSystem_Terminate(void);
-void		E3MacSystem_LoadPlugins(void);
-void		E3MacSystem_UnloadPlugins(void);
-#endif
-
-
-// Unix specific
-#if QUESA_OS_UNIX
-TQ3Status	E3UnixSystem_Initialise(void);
-void		E3UnixSystem_Terminate(void);
-void		E3UnixSystem_LoadPlugins(void);
-void		E3UnixSystem_UnloadPlugins(void);
-#endif
-
-
-// Windows specific
-#if QUESA_OS_WIN32
-TQ3Status	E3WindowsSystem_Initialise(void);
-void		E3WindowsSystem_Terminate(void);
-void		E3WindowsSystem_LoadPlugins(void);
-void		E3WindowsSystem_UnloadPlugins(void);
-#endif
-
-
-
-// SDL specific
-#if QUESA_OS_SDL
-TQ3Status	E3SDLSystem_Initialise(void);
-void		E3SDLSystem_Terminate(void);
-//void		E3SDLSystem_LoadPlugins(void);
-//void		E3SDLSystem_UnloadPlugins(void);
-#endif
-
-
-
-//=============================================================================
-//		C++ postamble
-//-----------------------------------------------------------------------------
-#ifdef __cplusplus
+TQ3StackCrawl
+E3StackCrawl_New()
+{
+	return NULL;
 }
-#endif
 
-#endif
 
+
+
+
+//=============================================================================
+//      E3StackCrawl_Count:	Return the number of names in a stack crawl.
+//-----------------------------------------------------------------------------
+TQ3Uns32
+E3StackCrawl_Count( TQ3StackCrawl inCrawl )
+{
+#pragma unused( inCrawl )
+	return 0;
+}
+
+
+
+
+
+//=============================================================================
+//      E3StackCrawl_Get:	Return a names in a stack crawl.
+//							The index should be at least 0, and less than the
+//							result of E3StackCrawl_Count.
+//-----------------------------------------------------------------------------
+const char*
+E3StackCrawl_Get( TQ3StackCrawl inCrawl, TQ3Uns32 inIndex )
+{
+#pragma unused( inCrawl, inIndex )
+	return NULL;
+}
+
+
+
+
+
+//=============================================================================
+//      E3StackCrawl_Dispose:	Free the memory of a stack crawl.
+//-----------------------------------------------------------------------------
+void
+E3StackCrawl_Dispose( TQ3StackCrawl inCrawl )
+{
+#pragma unused( inCrawl )
+}

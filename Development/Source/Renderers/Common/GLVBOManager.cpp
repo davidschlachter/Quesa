@@ -105,7 +105,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 #ifndef APIENTRY
-	#if QUESA_OS_WIN32
+	#if (QUESA_OS_WIN32 || _WIN32)
 		#define APIENTRY	__stdcall
 	#else
 		#define APIENTRY

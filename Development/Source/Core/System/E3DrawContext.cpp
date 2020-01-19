@@ -322,6 +322,11 @@ E3DrawContext_RegisterClass(void)
 
 #endif
 
+#if QUESA_OS_SDL
+	if (qd3dStatus == kQ3Success)
+		qd3dStatus = E3SDLDrawContext_RegisterClass();
+#endif
+
 	return(qd3dStatus);
 }
 

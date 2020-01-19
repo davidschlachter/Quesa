@@ -92,7 +92,7 @@
 //      Global Variables
 //-----------------------------------------------------------------------------
 
-#if QUESA_OS_MACINTOSH
+#if (QUESA_OS_MACINTOSH || QUESA_OS_UNIX || QUESA_OS_AGNOSTIC)
 	extern volatile int32_t gObjectCount;
 	volatile int32_t	gObjectCount = 0;
 #elif QUESA_OS_WIN32

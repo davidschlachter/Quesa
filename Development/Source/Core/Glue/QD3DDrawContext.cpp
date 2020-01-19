@@ -1406,3 +1406,41 @@ Q3CocoaDrawContext_GetNSView(TQ3DrawContextObject drawContext, void **nsView)
 #endif // QUESA_OS_COCOA
 
 
+
+
+
+#pragma mark -
+#if QUESA_OS_SDL
+
+TQ3DrawContextObject
+Q3SDLDrawContext_New(const TQ3SDLDrawContextData* drawContextData)
+{
+	return E3ClassTree::CreateInstance(kQ3DrawContextTypeSDL, kQ3False, drawContextData);
+}
+
+TQ3Status
+Q3SDLDrawContext_GetWindow(TQ3DrawContextObject drawContext, SDL_Window** sdlWindow)
+{
+
+
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT(E3DrawContext_IsOfMyClass(drawContext), kQ3Failure);
+	Q3_REQUIRE_OR_RESULT(Q3_VALID_PTR(sdlWindow), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return(E3SDLDrawContext_GetWindow(drawContext, sdlWindow));
+}
+
+#endif // QUESA_OS_SDL
+

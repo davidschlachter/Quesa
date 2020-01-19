@@ -107,6 +107,7 @@ extern "C" {
 #define kQ3ClassNameDrawContextPixmap				"PixmapDrawContext"
 #define kQ3ClassNameDrawContextWin32DC				"Win32DCDrawContext"
 #define kQ3ClassNameDrawContextX11					"X11DrawContext"
+#define kQ3ClassNameDrawContextSDL					"SDLDrawContext"
 #define kQ3ClassNameElement							"Element"
 #define kQ3ClassNameSetElement						"SetElement"
 #define kQ3ClassNameStorageFSSpec					"MacintoshFSSpec"

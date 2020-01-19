@@ -55,8 +55,14 @@
 #include "GLCocoaContext.h"
 #endif
 
+#if QUESA_OS_SDL
+	#include <SDL.h>
+#endif
+
 #include <vector>
 #include <cstring>
+#include <stdexcept>
+
 using namespace std;
 
 extern int gDebugMode;
@@ -163,7 +169,7 @@ enum
 //-----------------------------------------------------------------------------
 
 #ifndef APIENTRY
-	#if QUESA_OS_WIN32
+	#if (QUESA_OS_WIN32 || _WIN32)
 		#define APIENTRY	__stdcall
 	#else
 		#define APIENTRY
@@ -1829,6 +1835,216 @@ bool	WinGLContext::UpdateWindowSize()
 
 
 
+#pragma mark -
+#if QUESA_OS_SDL
+
+
+class SDLGLContext : public CQ3GLContext
+{
+public:
+	SDLGLContext(TQ3DrawContextObject theDrawContext);
+	virtual ~SDLGLContext();
+	virtual void		SwapBuffers();
+
+	// Make the platform OpenGL context current, but
+	// do not alter the framebuffer binding.
+	virtual void		SetCurrentBase(TQ3Boolean inForceSet);
+
+	virtual void		SetCurrent(TQ3Boolean inForceSet);
+
+	virtual bool		UpdateWindowSize();
+
+	SDL_Window*			window;
+	SDL_GLContext		glContext;
+
+	GLint							viewPort[4];
+	bool							needsScissor;
+};
+
+SDLGLContext::SDLGLContext(TQ3DrawContextObject theDrawContext)
+	: CQ3GLContext(theDrawContext)
+{
+	TQ3DrawContextData		drawContextData;
+	TQ3Status				qd3dStatus;
+	TQ3ObjectType drawContextType = Q3DrawContext_GetType(quesaDrawContext);
+
+	window = nullptr;
+	needsScissor = false;
+
+	switch (drawContextType) {
+	case kQ3DrawContextTypeSDL:
+		// Get the window
+		qd3dStatus = Q3SDLDrawContext_GetWindow(quesaDrawContext, &window);
+		if (qd3dStatus != kQ3Success || window == nullptr)
+			throw std::runtime_error("Couldn't get SDL window!");
+		glContext = SDL_GL_CreateContext(window);
+		if (!glContext) {
+			throw std::runtime_error("Couldn't create SDL GL context!");
+		}
+		break;
+	default:
+		throw std::runtime_error("SDLGLContext doesn't support this draw context type");
+		break;
+	}
+
+
+	int rc = SDL_GL_MakeCurrent(window, glContext);
+	if (rc != 0)
+		throw std::runtime_error("SDL_GL_MakeCurrent failed");
+
+	// Get the common draw context data
+	qd3dStatus = Q3DrawContext_GetData(theDrawContext, &drawContextData);
+	if (qd3dStatus != kQ3Success)
+		throw std::runtime_error("Couldn't get common draw context data");
+
+	int windowWidth, windowHeight;
+	SDL_GL_GetDrawableSize(window, &windowWidth, &windowHeight);
+
+	if (drawContextData.paneState)
+	{
+		viewPort[0] = static_cast<int>(drawContextData.pane.min.x);
+		viewPort[1] = static_cast<int>(windowHeight - drawContextData.pane.max.y);
+		viewPort[2] = static_cast<int>(drawContextData.pane.max.x - drawContextData.pane.min.x);
+		viewPort[3] = static_cast<int>(drawContextData.pane.max.y - drawContextData.pane.min.y);
+
+		glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		needsScissor = true;
+	}
+	else
+	{
+		viewPort[0] = 0;
+		viewPort[1] = 0;
+		viewPort[2] = windowWidth;
+		viewPort[3] = windowHeight;
+		glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		glDisable(GL_SCISSOR_TEST);
+		needsScissor = false;
+	}
+}
+
+SDLGLContext::~SDLGLContext()
+{
+	// Close down the context
+	int rc = SDL_GL_MakeCurrent(window, glContext);
+#if Q3_DEBUG
+	if (rc != 0)
+	{
+		const char*	error = SDL_GetError();
+		char		theString[kQ3StringMaximumLength];
+		snprintf( theString, sizeof(theString),
+			"SDL_GL_MakeCurrent: %s", error );
+		E3Assert( __FILE__, __LINE__, theString );
+	}
+#endif
+
+	// Destroy the context
+	SDL_GL_DeleteContext(glContext);
+}
+
+void SDLGLContext::SetCurrentBase(TQ3Boolean inForceSet)
+{
+	if (SDL_GL_MakeCurrent(window, glContext))
+	{
+		throw std::runtime_error("SDL_GL_MakeCurrent failed");
+	}
+}
+
+void SDLGLContext::SetCurrent(TQ3Boolean inForceSet)
+{
+	// Activate the context
+	SetCurrentBase(inForceSet);
+
+	// Make sure that no FBO is active
+	if (GetCurrentFrameBuffer() != 0)
+	{
+		BindFrameBuffer(GL_FRAMEBUFFER_EXT, 0);
+
+		// FBOs turn off scissor test
+		if (needsScissor)
+		{
+			glEnable(GL_SCISSOR_TEST);
+		}
+	}
+
+	glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+}
+
+void SDLGLContext::SwapBuffers()
+{
+	TQ3ObjectType drawContextType = Q3DrawContext_GetType(quesaDrawContext);
+	SDL_Window* sdlWindow;
+	TQ3Status				qd3dStatus;
+
+	switch (drawContextType) {
+	case kQ3DrawContextTypeSDL:
+		// Get the DC
+		qd3dStatus = Q3SDLDrawContext_GetWindow(quesaDrawContext, &sdlWindow);
+		if (qd3dStatus != kQ3Success || sdlWindow == nullptr)
+			throw std::exception();
+		SDL_GL_SwapWindow(sdlWindow);
+		break;
+
+	default:
+		throw std::runtime_error("can't swap buffers with non-SDL draw context");
+	}
+}
+
+bool SDLGLContext::UpdateWindowSize()
+{
+	EXTRA_LOG("SDLGLContext::UpdateWindowSize()");
+
+	TQ3DrawContextData drawContextData;
+	TQ3ObjectType drawContextType = Q3DrawContext_GetType(quesaDrawContext);
+
+	if (drawContextType != kQ3DrawContextTypeSDL
+		|| !window)
+	{
+		return false;
+	}
+
+	int windowWidth, windowHeight;
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	if (0 != SDL_GL_MakeCurrent(window, glContext))
+	{
+		return false;
+	}
+
+	if (kQ3Success != Q3DrawContext_GetData(quesaDrawContext, &drawContextData))
+	{
+		return false;
+	}
+
+	if (drawContextData.paneState)
+	{
+		viewPort[0] = static_cast<int>(drawContextData.pane.min.x);
+		viewPort[1] = static_cast<int>(windowHeight - drawContextData.pane.max.y);
+		viewPort[2] = static_cast<int>(drawContextData.pane.max.x - drawContextData.pane.min.x);
+		viewPort[3] = static_cast<int>(drawContextData.pane.max.y - drawContextData.pane.min.y);
+
+		glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		needsScissor = true;
+	}
+	else
+	{
+		viewPort[0] = 0;
+		viewPort[1] = 0;
+		viewPort[2] = windowWidth;
+		viewPort[3] = windowHeight;
+		glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		glDisable(GL_SCISSOR_TEST);
+		needsScissor = false;
+	}
+
+	return true;
+}
+
+#endif // QUESA_OS_SDL
+
+
 
 //=============================================================================
 //		Public functions
@@ -1893,6 +2109,19 @@ GLDrawContext_New(TQ3ViewObject theView, TQ3DrawContextObject theDrawContext, GL
 			preferredStencilBits );
 	}
 	
+#if QUESA_OS_SDL
+	// If an SDL context is requested, try to create it regardless of the platform.
+	if (glContext == nullptr && dcType == kQ3DrawContextTypeSDL) {
+		try
+		{
+			glContext = new SDLGLContext(theDrawContext);
+		}
+		catch (...)
+		{
+		}
+	}
+#endif
+
 	if (glContext == nullptr)
 	{
 		try

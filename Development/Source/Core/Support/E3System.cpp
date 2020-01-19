@@ -73,6 +73,19 @@ E3System_Initialise(void)
 #elif QUESA_OS_WIN32
 	qd3dStatus = E3WindowsSystem_Initialise();
 
+#elif QUESA_OS_SDL
+	// If we're using SDL without an underlying Mac/Unix/Win32 system,
+	// set the status to true so we always enter the if branch below.
+	qd3dStatus = kQ3Success;
+
+#endif
+
+#if QUESA_OS_SDL
+	// Initialise SDL after the underlying system.
+	if (qd3dStatus == kQ3Success)
+	{
+		qd3dStatus = E3SDLSystem_Initialise();
+	}
 #endif
 
 	return(qd3dStatus);
@@ -91,6 +104,12 @@ E3System_Terminate(void)
 
 
 	// Terminate the system
+
+#if QUESA_OS_SDL
+	// Terminate SDL first, regardless of the underlying system.
+	E3SDLSystem_Terminate();
+#endif
+
 #if QUESA_OS_MACINTOSH
 	E3MacSystem_Terminate();
 
@@ -130,6 +149,9 @@ E3System_LoadPlugins(void)
 
 #elif QUESA_OS_WIN32
 	E3WindowsSystem_LoadPlugins();
+
+#elif QUESA_OS_SDL
+	//E3LogMessage("E3SDLSystem_LoadPlugins not implemented yet!\n");
 
 #endif
 

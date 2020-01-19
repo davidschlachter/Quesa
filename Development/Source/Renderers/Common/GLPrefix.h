@@ -74,6 +74,16 @@
     #include <GL/glx.h>
     #include <GL/glu.h>
 
+#elif (QUESA_OS_SDL && QUESA_OS_AGNOSTIC)
+
+	#include <SDL_opengl.h>
+	#include <SDL_opengl_glext.h>
+	#if __APPLE__
+		#include <OpenGL/glu.h>
+	#else
+		#include <GL/glu.h>
+	#endif
+
 #endif
 
 
@@ -168,7 +178,7 @@ typedef	void*		TQ3GLContext;
 	#define CALLBACK
 #endif
 
-#if defined(__GNUC__) && (__GNUC__ >= 4) && defined(__APPLE_CC__) && (__APPLE_CC__ < 5450)
+#if QUESA_OS_MACINTOSH && defined(__GNUC__) && (__GNUC__ >= 4) && defined(__APPLE_CC__)
 
 	typedef GLvoid (CALLBACK *GLcallback)(...);
 #else

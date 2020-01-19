@@ -1372,6 +1372,33 @@ typedef struct TQ3DialogAnchor {
 
 
 //=============================================================================
+//      SDL types
+//-----------------------------------------------------------------------------
+#if (QUESA_OS_SDL && QUESA_OS_AGNOSTIC)
+
+/*!
+ *  @struct
+ *      TQ3DialogAnchor (SDL)
+ *  @discussion
+ *      SDL dialog anchor.
+ *
+ *      Supplied to Q3Renderer_ModalConfigure to pass platform-specific
+ *      dialog state to the renderer.
+ *
+ *  @field notUsed          Not used.
+ */
+typedef struct TQ3DialogAnchor {
+	void                                        * _Nullable notUsed;
+} TQ3DialogAnchor;
+
+
+#endif // QUESA_OS_SDL fallback if OS-agnostic
+
+
+
+
+
+//=============================================================================
 //      Types
 //-----------------------------------------------------------------------------
 /*!

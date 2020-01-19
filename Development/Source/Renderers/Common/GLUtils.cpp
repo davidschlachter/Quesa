@@ -568,4 +568,11 @@ void*	GLGetProcAddress( const char* funcName )
 
 #endif
 
+#elif QUESA_OS_SDL && QUESA_OS_AGNOSTIC
+
+void*	GLGetProcAddress( const char* funcName )
+{
+	return SDL_GL_GetProcAddress(funcName);
+}
+
 #endif

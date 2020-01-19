@@ -83,7 +83,9 @@
     #include <X11/Xutil.h>
 #endif // QUESA_OS_UNIX
 
-
+#if QUESA_OS_SDL
+    #include <SDL.h>
+#endif
 
 
 
@@ -530,6 +532,15 @@ typedef struct TQ3CocoaDrawContextData {
 
 
 
+//=============================================================================
+//      SDL types
+//-----------------------------------------------------------------------------
+#if QUESA_OS_SDL
+typedef struct TQ3SDLDrawContextData {
+    TQ3DrawContextData                          drawContextData;
+    SDL_Window                                  * _Nonnull sdlWindow;
+} TQ3SDLDrawContextData;
+#endif // QUESA_OS_SDL
 
 
 //=============================================================================
@@ -1197,6 +1208,7 @@ Q3XDrawContext_GetColormapData (
 //=============================================================================
 //      Windows function prototypes
 //-----------------------------------------------------------------------------
+
 #if QUESA_OS_WIN32
 /*!
 	@functiongroup	 Windows Draw Context
@@ -1384,6 +1396,26 @@ Q3CocoaDrawContext_GetNSView (
 );
 
 #endif // QUESA_OS_COCOA
+
+
+
+//=============================================================================
+//      SDL function prototypes
+//-----------------------------------------------------------------------------
+#if QUESA_OS_SDL
+
+Q3_EXTERN_API_C(TQ3DrawContextObject _Nullable)
+Q3SDLDrawContext_New(
+    const TQ3SDLDrawContextData* _Nonnull drawContextData
+);
+
+Q3_EXTERN_API_C(TQ3Status)
+Q3SDLDrawContext_GetWindow(
+    TQ3DrawContextObject _Nonnull drawContext,
+    SDL_Window * _Nullable * _Nonnull sdlWindow
+);
+
+#endif // QUESA_OS_SDL
 
 
 

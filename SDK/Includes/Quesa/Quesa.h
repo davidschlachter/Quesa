@@ -57,7 +57,8 @@
 #if !defined(QUESA_OS_MACINTOSH) && \
 	!defined(QUESA_OS_WIN32)     && \
     !defined(QUESA_OS_UNIX)      && \
-    !defined(QUESA_OS_COCOA)
+    !defined(QUESA_OS_COCOA)     && \
+    !defined(QUESA_OS_SDL)
 
 	// Mac OS
 	#if ((defined(__MWERKS__) && __dest_os == __mac_os) || defined(MPW_CPLUS) || defined(MPW_C))
@@ -123,10 +124,23 @@
     #define QUESA_OS_UNIX                       		0
 #endif
 
+#ifdef QUESA_OS_SDL
+    #undef  QUESA_OS_SDL
+    #define QUESA_OS_SDL                        		1
+	#undef QUESA_OS_AGNOSTIC
+	#if !QUESA_OS_WIN32 && !QUESA_OS_UNIX && !QUESA_OS_MACINTOSH
+		#define QUESA_OS_AGNOSTIC                       1
+	#else
+#define QUESA_OS_AGNOSTIC                               0
+	#endif
+#else
+    #define QUESA_OS_SDL                        		0
+#endif
 
 #if (!QUESA_OS_MACINTOSH && \
      !QUESA_OS_WIN32     && \
-     !QUESA_OS_UNIX)
+     !QUESA_OS_UNIX      && \
+     !QUESA_OS_SDL)
     #error Target OS not selected!
 #endif
 
@@ -188,7 +202,7 @@
 
 
 // Windows specific
-#if QUESA_OS_WIN32
+#if (QUESA_OS_WIN32)
     // Build constants
     #define QUESA_HOST_IS_BIG_ENDIAN					0
 
@@ -209,6 +223,12 @@
 #endif // QUESA_OS_WIN32
 
 
+#if (QUESA_OS_SDL && QUESA_OS_AGNOSTIC && _WIN32)
+	#define QUESA_HOST_IS_BIG_ENDIAN					0
+	#ifdef Q3_EXPORT_SYMBOLS
+		#define Q3_EXTERN_API_C(_type)					__declspec(dllexport) _type __cdecl  
+	#endif
+#endif
 
 
 
@@ -709,6 +729,7 @@ enum {
             kQ3DrawContextTypeMacintosh         = Q3_OBJECT_TYPE('d', 'm', 'a', 'c'),
             kQ3DrawContextTypeCocoa             = Q3_OBJECT_TYPE('d', 'c', 'c', 'o'),
             kQ3DrawContextTypeWin32DC           = Q3_OBJECT_TYPE('d', 'w', '3', '2'),
+            kQ3DrawContextTypeSDL               = Q3_OBJECT_TYPE('d', 's', 'd', 'l'),
             kQ3DrawContextTypeDDSurface         = Q3_OBJECT_TYPE('d', 'd', 'd', 's'),
             kQ3DrawContextTypeX11               = Q3_OBJECT_TYPE('d', 'x', '1', '1'),
         kQ3SharedTypeTexture                    = Q3_OBJECT_TYPE('t', 'x', 't', 'r'),

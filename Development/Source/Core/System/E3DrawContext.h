@@ -120,6 +120,13 @@ typedef struct TQ3DDSurfaceDrawContextState {
 
 #endif
 
+// SDL draw context state, regardless of platform
+#if QUESA_OS_SDL
+typedef struct TQ3SDLDrawContextState {
+	TQ3SDLDrawContextData			theData;
+	TQ3Area							windowRect;
+} TQ3SDLDrawContextState;
+#endif
 
 
 // Draw context data
@@ -148,7 +155,10 @@ typedef struct TQ3DrawContextUnionData {
 #if !defined(QD3D_NO_DIRECTDRAW)
 		TQ3DDSurfaceDrawContextState	winDDData;
 #endif
+#endif
 
+#if QUESA_OS_SDL
+		TQ3SDLDrawContextState			sdlData;
 #endif
 	} data;
 } TQ3DrawContextUnionData;
@@ -282,6 +292,12 @@ TQ3Status				E3DDSurfaceDrawContext_GetDirectDrawSurface(TQ3DrawContextObject dr
 #endif
 
 
+// SDL specific
+#if QUESA_OS_SDL
+TQ3Status				E3SDLDrawContext_RegisterClass(void);
+TQ3Status				E3SDLDrawContext_UnregisterClass(void);
+TQ3Status				E3SDLDrawContext_GetWindow(TQ3DrawContextObject drawContext, struct SDL_Window** sdlWindow);
+#endif
 
 
 
