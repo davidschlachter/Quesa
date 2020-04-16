@@ -186,7 +186,7 @@ inline GLvoid* GLBufferObPtr( GLuint offset )
 	return reinterpret_cast<GLvoid*>( static_cast<uintptr_t>( offset ) );
 }
 
-inline GLvoid* GLBufferObPtr( intptr_t offset )
+inline GLvoid* GLBufferObPtr( GLsizeiptr offset )
 {
 	return reinterpret_cast<GLvoid*>( static_cast<uintptr_t>( offset ) );
 }
