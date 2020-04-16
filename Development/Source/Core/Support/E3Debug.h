@@ -109,7 +109,8 @@ FILE*	E3GetLogStream( bool inCreate );
 #define	Q3_LOG_FMT(...)		do {	\
 								char msg_[1024];	\
 								snprintf( msg_, sizeof(msg_), __VA_ARGS__ );	\
-								strncat( msg_, "\n", 1 );	\
+								strncat( msg_, "\n", 1023 );	\
+								msg_[1023] = '\0';  \
 								E3LogMessage( msg_ );	\
 							} while (0)
 
@@ -156,7 +157,7 @@ FILE*	E3GetLogStream( bool inCreate );
 	#define	Q3_MESSAGE_FMT(...)		do {	\
 										char msg_[1024];	\
 										snprintf( msg_, sizeof(msg_), __VA_ARGS__ );	\
-										std::strncat( msg_, "\n", 1 );	\
+										strncat( msg_, "\n", 1 );	\
 										E3LogMessage( msg_ );	\
 									} while (0)
 
