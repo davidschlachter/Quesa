@@ -1957,6 +1957,7 @@ void	QORenderer::PerPixelLighting::UpdateFogStyle(
 		mHalfspaceFogRate = inFog.halfspaceFogRate;
 		mHalfspaceFogPlane = newEyePlane;
 		
+#if !(QUESA_APPLY_FOG_COLOR_IN_ALL_PASSES)
 		if (mPassNumber > 1)
 		{
 			// Here's why we need to mess with the fog color:  The contributions of
@@ -1974,6 +1975,7 @@ void	QORenderer::PerPixelLighting::UpdateFogStyle(
 			mFogColor = kBlackColor;
 		}
 		else
+#endif
 		{
 			mFogColor.r = inFog.color.r;
 			mFogColor.g = inFog.color.g;
