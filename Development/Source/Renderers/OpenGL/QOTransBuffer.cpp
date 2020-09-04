@@ -1274,7 +1274,7 @@ void	TransBuffer::RenderPrimGroup(
 		// Maybe update fragment program.
 		mPerPixelLighting.PreGeomSubmit( nullptr, vertsPerPrim - 1 );
 
-		bool haveNormal = ((flags & kVertexHaveNormal) != 0);
+		bool haveNormal = ((flags & kVertexHaveNormal) != 0) && mRenderer.CurrentShaderHasNormalAttrib();
 		bool haveUV = (leader.mTextureName != 0) && ((flags & kVertexHaveUV) != 0);
 		bool haveColor = ((flags & kVertexHaveDiffuse) != 0);
 		

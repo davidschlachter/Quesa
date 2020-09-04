@@ -1114,6 +1114,12 @@ void	QORenderer::Renderer::RenderFastPathTriMesh(
 								const TQ3Param2D* inVertUVs,
 								const TQ3ColorRGB* inVertColors )
 {
+	// Don't pass normals on to a shader that doesn't use them.
+	if (!CurrentShaderHasNormalAttrib())
+	{
+		inVertNormals = nullptr;
+	}
+		
 	// If there is a texture, and illumination is not nullptr, use white as the
 	// underlying color.
 	if ( mTextures.IsTextureActive() &&
@@ -1131,7 +1137,7 @@ void	QORenderer::Renderer::RenderFastPathTriMesh(
 	}
 	
 	// Enable/disable array states.
-	mGLClientStates.EnableNormalArray( true );
+	mGLClientStates.EnableNormalArray( inVertNormals != nullptr );
 	mGLClientStates.EnableTextureArray( inVertUVs != nullptr );
 	mGLClientStates.EnableColorArray( inVertColors != nullptr );
 	
