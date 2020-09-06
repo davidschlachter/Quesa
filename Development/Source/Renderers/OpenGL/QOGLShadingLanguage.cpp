@@ -780,6 +780,10 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 			case QORenderer::kFogModeHalfspace:
 				outSource += kCalcFogHalfspace;
 				break;
+
+			case QORenderer::kFogModePlaneBasedLinear:
+				outSource += kCalcFogPlaneBasedLinear;
+				break;
 			
 			default:
 				break;
@@ -1169,7 +1173,8 @@ void	QORenderer::PerPixelLighting::ChooseProgram()
 						mHalfspaceFogPlane.x, mHalfspaceFogPlane.y,
 						mHalfspaceFogPlane.z, mHalfspaceFogPlane.w );
 				}
-				else if (mProgramCharacteristic.mFogModeCombined == kFogModeLinear)
+				else if (mProgramCharacteristic.mFogModeCombined == kFogModeLinear ||
+					mProgramCharacteristic.mFogModeCombined == kFogModePlaneBasedLinear)
 				{
 					mFuncs.glUniform1f( theProgram->mLinearFogEndUniformLoc, mLinearFogEnd );
 					mFuncs.glUniform1f( theProgram->mLinearFogScaleUniformLoc, mLinearFogScale );
@@ -1894,6 +1899,10 @@ CombinedFogMode( const TQ3FogStyleExtendedData& inFog )
 		{
 			mode = static_cast< QORenderer::EFogModeCombined >( inFog.mode );
 		}
+		else if (inFog.mode == kQ3FogModePlaneBasedLinear)
+		{
+			mode = QORenderer::kFogModePlaneBasedLinear;
+		}
 	}
 	return mode;
 }
@@ -1982,7 +1991,7 @@ void	QORenderer::PerPixelLighting::UpdateFogStyle(
 			mFogColor.b = inFog.color.b;
 		}
 		mFogDensity = inFog.density;
-		if (newMode == kFogModeLinear)
+		if (newMode == kFogModeLinear || newMode == kFogModePlaneBasedLinear)
 		{
 			mLinearFogEnd = inFog.fogEnd;
 			mLinearFogScale = 1.0f / (inFog.fogEnd - inFog.fogStart);

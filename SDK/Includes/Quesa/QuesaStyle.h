@@ -240,6 +240,7 @@ typedef enum TQ3FogMode {
     kQ3FogModeExponential                       = 1,
     kQ3FogModeExponentialSquared                = 2,
     kQ3FogModeAlpha                             = 3,
+    kQ3FogModePlaneBasedLinear                  = 4,
     kQ3FogModeSize32                            = 0xFFFFFFFF
 } TQ3FogMode;
 

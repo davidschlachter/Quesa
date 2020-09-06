@@ -1753,6 +1753,13 @@ const char* kCalcFogLinear = R"(
 )";
 
 
+#pragma mark kCalcFogPlaneBasedLinear
+const char* kCalcFogPlaneBasedLinear = R"(
+	float dist = -FSIN.ECPos4.z / FSIN.ECPos4.w;  // Plane-based fog
+	float fog = (linearFogEnd - dist) * linearFogScale;
+)";
+
+
 #pragma mark kCalcFogExp
 const char* kCalcFogExp = R"(
 	float dist = length( FSIN.ECPos4.xyz );

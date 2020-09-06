@@ -97,6 +97,7 @@ namespace QOGLSLShader
 	extern const char* kCalcFogExp;
 	extern const char* kCalcFogExp2;
 	extern const char* kCalcFogHalfspace;
+	extern const char* kCalcFogPlaneBasedLinear;
 	extern const char* kMixFog;
 	extern const char*	kAngleAffectOnAlpha;
 	extern const char* kMainFragmentShaderEndSource;

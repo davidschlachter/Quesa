@@ -84,7 +84,8 @@ enum EFogModeCombined
 	kFogModeLinear,
 	kFogModeExponential,
 	kFogModeExponentialSquared,
-	kFogModeHalfspace
+	kFogModeHalfspace,
+	kFogModePlaneBasedLinear,
 };
 
 enum class ECameraProjectionType
