@@ -50,6 +50,7 @@
 
 
 
+extern int gDebugMode;
 
 
 //=============================================================================
@@ -86,7 +87,7 @@ E3IsValidPtr(void *thePtr)
 
 
 	// Check the pointer
-	if (thePtr == NULL)
+	if (thePtr == nullptr)
 		return(kQ3False);
 
 
@@ -97,3 +98,28 @@ E3IsValidPtr(void *thePtr)
 
 
 
+
+
+//=============================================================================
+//      E3LogMessage : Write a message to a log file.
+//-----------------------------------------------------------------------------
+void		E3LogMessage( const char* inMessage )
+{
+	if (gDebugMode >= 0)
+	{
+		printf("[Quesa] %s", inMessage);
+	}
+}
+
+
+
+
+
+
+
+//=============================================================================
+//      E3CloseLog : Close the log file.
+//-----------------------------------------------------------------------------
+void		E3CloseLog()
+{
+}

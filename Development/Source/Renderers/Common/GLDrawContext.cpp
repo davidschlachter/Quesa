@@ -1162,7 +1162,7 @@ X11GLContext::X11GLContext(
 	: CQ3GLContext( theDrawContext )
 	, theDisplay( nullptr )
 	, glContext( nullptr )
-	, glDrawable( nullptr )
+	, glDrawable( 0 )
 {
 	XVisualInfo				visualInfoTemplate;
 	TQ3ObjectType			drawContextType;

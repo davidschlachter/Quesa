@@ -45,6 +45,7 @@
 //-----------------------------------------------------------------------------
 #include "E3Prefix.h"
 #include "E3Storage.h"
+#include "E3Main.h"
 
 
 
@@ -111,18 +112,14 @@ E3UnixStorage_RegisterClass(void)
 	// API was officially obsoleted, this will be OK - since nobody
 	// should be using this API anyway, anyone who does can just switch
 	// to the official PathStorage object.
-	qd3dStatus = E3ClassTree::RegisterClass(kQ3SharedTypeStorage,
-											kQ3StorageTypeUnix,
-											kQ3ClassNameStorageUnix,
+	qd3dStatus = Q3_REGISTER_CLASS_NO_DATA(kQ3ClassNameStorageUnix,
 											NULL,
-											sizeof(E3UnixStorage));
+											E3UnixStorage);
 
 	if (qd3dStatus == kQ3Success)
-		qd3dStatus = E3ClassTree::RegisterClass(kQ3StorageTypeUnix,
-												kQ3UnixStorageTypePath,
-												kQ3ClassNameStorageUnixPath,
+		qd3dStatus = Q3_REGISTER_CLASS_NO_DATA(kQ3ClassNameStorageUnixPath,
 												theClass->GetMetaHandler (),
-												sizeof(E3UnixStorage));
+												E3UnixStorage);
 
 	return(qd3dStatus);
 }

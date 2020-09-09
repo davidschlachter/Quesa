@@ -45,6 +45,7 @@
 //-----------------------------------------------------------------------------
 #include "E3Prefix.h"
 #include "E3DrawContext.h"
+#include "E3Main.h"
 
 
 
@@ -61,6 +62,8 @@ class E3XDrawContext : public E3DrawContext  // This is a leaf class so no other
 								// the .h file, hence all the fields can be public
 								// as nobody should be including this file
 	{
+	Q3_CLASS_ENUMS ( kQ3DrawContextTypeX11, E3XDrawContext, E3DrawContext )
+
 public :
 
 	TQ3DrawContextUnionData				instanceData ;
@@ -83,7 +86,7 @@ e3drawcontext_x_new(TQ3Object theObject, void *privateData, const void *paramDat
 	// Initialise our instance data
 	instanceData->data.x11Data.theData = *x11Data;
 
-	E3DrawContext_InitaliseData(&instanceData->data.x11Data.theData.contextData);
+	E3DrawContext_InitialiseData(&instanceData->data.x11Data.theData.contextData);
 
 	return(kQ3Success);
 }
@@ -148,11 +151,9 @@ E3XDrawContext_RegisterClass(void)
 
 
 	// Register the class
-	qd3dStatus = E3ClassTree::RegisterClass(kQ3SharedTypeDrawContext,
-											kQ3DrawContextTypeX11,
-											kQ3ClassNameDrawContextX11,
+	qd3dStatus = Q3_REGISTER_CLASS(kQ3ClassNameDrawContextX11,
 											e3drawcontext_x_metahandler,
-											sizeof(E3XDrawContext));
+											E3XDrawContext);
 
 	return(qd3dStatus);
 }

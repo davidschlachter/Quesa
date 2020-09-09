@@ -355,7 +355,7 @@ E3DrawContext_UnregisterClass(void)
 	#endif
 
 #elif QUESA_OS_UNIX
-	qsuccess = (kQ3Success == E3XDrawContext_UnregisterClass())
+	success = (kQ3Success == E3XDrawContext_UnregisterClass())
 			&& success;
 
 #elif QUESA_OS_WIN32
