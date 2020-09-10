@@ -215,9 +215,25 @@
 //=============================================================================
 //      Platform independent pre-amble
 //-----------------------------------------------------------------------------
-// Default to big endian
+// Try to guess endianness
 #ifndef QUESA_HOST_IS_BIG_ENDIAN
-	#define QUESA_HOST_IS_BIG_ENDIAN					1
+
+	#if defined(__LITTLE_ENDIAN__) || \
+        (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+
+		#define QUESA_HOST_IS_BIG_ENDIAN					0
+
+	#elif defined(__BIG_ENDIAN__) || \
+		(defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+
+		#define QUESA_HOST_IS_BIG_ENDIAN					1
+
+	#else
+
+		#error "Could not detect endianness. Please set QUESA_HOST_IS_BIG_ENDIAN."
+
+	#endif
+
 #endif
 
 
