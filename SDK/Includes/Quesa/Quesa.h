@@ -675,6 +675,7 @@ enum {
 #if QUESA_ALLOW_QD3D_EXTENSIONS
                 kQ3StyleTypeCastShadows         = Q3_OBJECT_TYPE('c', 'a', 's', 'h'),
                 kQ3StyleTypeLineWidth           = Q3_OBJECT_TYPE('l', 'n', 'w', 'd'),
+				kQ3StyleTypeBlending			= Q3_OBJECT_TYPE('b', 'l', 'n', 'd'),
 #endif // QUESA_ALLOW_QD3D_EXTENSIONS
                 kQ3StyleTypeReceiveShadows      = Q3_OBJECT_TYPE('r', 'c', 's', 'h'),
                 kQ3StyleTypeHighlight           = Q3_OBJECT_TYPE('h', 'i', 'g', 'h'),

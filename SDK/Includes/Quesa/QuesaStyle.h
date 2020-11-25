@@ -394,7 +394,27 @@ typedef struct TQ3FogStyleExtendedData
 	TQ3RationalPoint4D         halfspaceFogPlane;
 } TQ3FogStyleExtendedData;
 
+	
+/*!
+ *  @struct
+ *      TQ3BlendingStyleData
+ *  @discussion
+ *      Alpha blending style data.
+ *
+ *      This structure controls the parameters passed to glBlendFunc().
+ *      Set the parameters in this structure to OpenGL blending mode
+ *      enum values such as GL_ONE, GL_ONE_MINUS_SRC_ALPHA, etc.
+ *
+ *  @field srcFactor        Source blending factor.
+ *  @field dstFactor        Destination blending factor.
+ */
+typedef struct TQ3BlendingStyleData
+{
+	TQ3Uns32 srcFactor;
+	TQ3Uns32 dstFactor;
+} TQ3BlendingStyleData;
 
+	
 
 
 //=============================================================================
@@ -1434,6 +1454,88 @@ Q3LineWidthStyle_SetData (
     TQ3StyleObject _Nonnull		styleObject,
     float				inWidth
 );
+
+#endif // QUESA_ALLOW_QD3D_EXTENSIONS
+
+
+
+
+#if QUESA_ALLOW_QD3D_EXTENSIONS    
+
+
+/*!
+	@functiongroup Alpha blending
+*/
+
+
+/*!
+ *  @function
+ *      Q3BlendingStyle_New
+ *  @discussion
+ *      Create a blending style.
+ *
+ *  @param data             The blending style data.
+ *  @result                 The new blending style.
+ */
+Q3_EXTERN_API_C(TQ3StyleObject _Nonnull)
+Q3BlendingStyle_New(
+	const TQ3BlendingStyleData* _Nonnull data
+);
+
+
+
+/*!
+ *  @function
+ *      Q3BlendingStyle_Submit
+ *  @discussion
+ *      Submit a blending style to a view.
+ *
+ *  @param data             The blending style data.
+ *  @param view             The view to submit the style to.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3BlendingStyle_Submit(
+	const TQ3BlendingStyleData* _Nonnull data,
+	TQ3ViewObject _Nonnull                view
+);
+
+
+
+/*!
+ *  @function
+ *      Q3BlendingStyle_GetData
+ *  @discussion
+ *      Get the data from a blending style.
+ *
+ *  @param styleObject      The style to query.
+ *  @param data             Receives the data from the style.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3BlendingStyle_GetData(
+	TQ3StyleObject _Nonnull               styleObject,
+	TQ3BlendingStyleData* _Nonnull data
+);
+
+
+
+/*!
+ *  @function
+ *      Q3BlendingStyle_SetData
+ *  @discussion
+ *      Set the data for a blending style.
+ *
+ *  @param styleObject      The style to update.
+ *  @param data             The new data for the style.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3BlendingStyle_SetData(
+	TQ3StyleObject _Nonnull               styleObject,
+	const TQ3BlendingStyleData* _Nonnull data
+);
+
 
 #endif // QUESA_ALLOW_QD3D_EXTENSIONS
 

@@ -137,6 +137,11 @@ TQ3Status			E3LineWidthStyle_Submit(float inWidth, TQ3ViewObject theView);
 TQ3Status			E3LineWidthStyle_Get(TQ3StyleObject styleObject, float *outWidth);
 TQ3Status			E3LineWidthStyle_Set(TQ3StyleObject styleObject, float inWidth);
 
+TQ3StyleObject		E3BlendingStyle_New(const TQ3BlendingStyleData *data);
+TQ3Status			E3BlendingStyle_Submit(const TQ3BlendingStyleData *data, TQ3ViewObject theView);
+TQ3Status			E3BlendingStyle_Get(TQ3StyleObject styleObject, TQ3BlendingStyleData* data);
+TQ3Status			E3BlendingStyle_Set(TQ3StyleObject styleObject, const TQ3BlendingStyleData* data);
+
 
 
 

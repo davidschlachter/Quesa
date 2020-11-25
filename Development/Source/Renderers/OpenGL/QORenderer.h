@@ -369,6 +369,8 @@ protected:
 									TQ3Boolean inStyleData );
 	void					UpdateLineWidthStyle(
 									float inStyleData );
+	void					UpdateBlendingStyle(
+									GLenum inStyleDataSrc, GLenum inStyleDataDst );
 	
 
 	//
@@ -449,6 +451,7 @@ protected:
 	float					mCurrentSpecularControl;
 	TQ3ColorRGB				mCurrentEmissiveColor;
 	float 					mLineWidth;
+	TQ3BlendingStyleData	mBlendingStyleData;
 	TQ3XAttributeMask		mAttributesMask;
 	bool					mUpdateShader;
 	TQ3Float32				mAlphaThreshold; // cached value of kQ3RendererPropertyAlphaThreshold

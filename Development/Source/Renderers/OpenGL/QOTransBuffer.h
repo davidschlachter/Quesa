@@ -70,6 +70,7 @@ struct PrimStyleState
 	TQ3ObjectType		mIlluminationType;
 	TQ3Uns32			mFogStyleIndex;
 	float				mLineWidthStyle;
+	TQ3BlendingStyleData mBlendingStyleData;
 };
 
 struct TransparentPrim
@@ -214,6 +215,8 @@ private:
 											const TransparentPrim& inPrim );
 	void							UpdateEmission(
 											const TransparentPrim& inPrim );
+	void							UpdateBlending(
+											const TransparentPrim& inPrim);
 
 	void							RenderPrimGroup(
 											TQ3ViewObject inView );

@@ -157,6 +157,7 @@ void							E3View_State_SetStyleFog(TQ3ViewObject theView,
 									TQ3StyleObject theFogObject );
 								
 void							E3View_State_SetStyleLineWidth(TQ3ViewObject theView, float inWidth);
+void							E3View_State_SetStyleBlending(TQ3ViewObject theView, const TQ3BlendingStyleData* theData);
 
 void							E3View_State_SetAttributeSurfaceUV(TQ3ViewObject theView, const TQ3Param2D *theData);
 void							E3View_State_SetAttributeShadingUV(TQ3ViewObject theView, const TQ3Param2D *theData);

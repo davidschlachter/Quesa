@@ -241,6 +241,19 @@ public :
 	
 
 
+class E3BlendingStyle : public E3Style  // This is a leaf class so no other classes use this,
+								// so it can be here in the .c file rather than in
+								// the .h file, hence all the fields can be public
+								// as nobody should be including this file
+{
+	Q3_CLASS_ENUMS(kQ3StyleTypeBlending, E3BlendingStyle, E3Style)
+public:
+
+	TQ3BlendingStyleData	instanceData;
+};
+
+
+
 //=============================================================================
 //      Internal functions
 //-----------------------------------------------------------------------------
@@ -940,6 +953,56 @@ e3style_linewidth_metahandler(TQ3XMethodType methodType)
 
 
 
+//=============================================================================
+//      e3style_blending_submit : Blending submit method.
+//-----------------------------------------------------------------------------
+#pragma mark -
+static TQ3Status
+e3style_blending_submit(TQ3ViewObject theView, TQ3ObjectType objectType,
+						TQ3Object theObject, const void *objectData)
+{
+#pragma unused(objectType)
+#pragma unused(theObject)
+	const TQ3BlendingStyleData	*instanceData = (const TQ3BlendingStyleData *) objectData;
+
+
+
+	// Submit the style
+	E3View_State_SetStyleBlending(theView, instanceData);
+
+	return(kQ3Success);
+}
+
+
+
+
+
+
+//=============================================================================
+//      e3style_blending_metahandler : Blending metahandler.
+//-----------------------------------------------------------------------------
+static TQ3XFunctionPointer
+e3style_blending_metahandler(TQ3XMethodType methodType)
+{
+	TQ3XFunctionPointer		theMethod = nullptr;
+
+
+
+	// Return our methods
+	switch (methodType) {
+		case kQ3XMethodTypeObjectSubmitRender:
+		case kQ3XMethodTypeObjectSubmitPick:
+		case kQ3XMethodTypeObjectSubmitBounds:
+			theMethod = (TQ3XFunctionPointer) e3style_blending_submit;
+			break;
+		}
+	
+	return(theMethod);
+}
+
+
+
+
 
 //=============================================================================
 //      Public functions
@@ -1023,6 +1086,11 @@ E3Style_RegisterClass(void)
 											e3style_linewidth_metahandler,
 											E3LineWidthStyle ) ;
 
+	if (qd3dStatus == kQ3Success)
+		qd3dStatus = Q3_REGISTER_CLASS (	kQ3ClassNameStyleBlending,
+											e3style_blending_metahandler,
+											E3BlendingStyle ) ;
+
 	return(qd3dStatus);
 }
 
@@ -1053,6 +1121,7 @@ E3Style_UnregisterClass(void)
 	E3ClassTree::UnregisterClass(kQ3StyleTypePickID,    			 kQ3True);
 	E3ClassTree::UnregisterClass(kQ3StyleTypeSubdivision,			 kQ3True);
 	E3ClassTree::UnregisterClass(kQ3StyleTypeLineWidth,     		 kQ3True);
+	E3ClassTree::UnregisterClass(kQ3StyleTypeBlending,               kQ3True);
 	E3ClassTree::UnregisterClass(kQ3ShapeTypeStyle,     			 kQ3True);
 
 	return(kQ3Success);
@@ -2067,5 +2136,67 @@ TQ3Status			E3LineWidthStyle_Set(TQ3StyleObject styleObject, float inWidth)
 	Q3Shared_Edited ( styleObject ) ;
 
 	return kQ3Success ;
+}
+
+
+
+
+
+
+//=============================================================================
+//      E3BlendingStyle_New : Create a new blending style.
+//-----------------------------------------------------------------------------
+#pragma mark -
+TQ3StyleObject		E3BlendingStyle_New(const TQ3BlendingStyleData *data)
+{
+	// Validate our parameters
+	Q3_REQUIRE_OR_RESULT(Q3_VALID_PTR(data), nullptr);
+	
+	TQ3StyleObject theObject = E3ClassTree::CreateInstance(kQ3StyleTypeBlending, kQ3False, data);
+
+	return(theObject);
+}
+
+
+
+
+
+//=============================================================================
+//      E3BlendingStyle_Submit : Submit the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3BlendingStyle_Submit(const TQ3BlendingStyleData* data, TQ3ViewObject theView)
+{
+	TQ3Status qd3dStatus = E3View_SubmitImmediate(theView, kQ3StyleTypeBlending, data);
+
+	return(qd3dStatus);
+}
+
+
+
+
+
+//=============================================================================
+//      E3BlendingStyle_Get : Get the data for the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3BlendingStyle_Get(TQ3StyleObject styleObject, TQ3BlendingStyleData* data)
+{
+	*data = ((E3BlendingStyle*)styleObject)->instanceData;
+
+	return kQ3Success;
+}
+
+
+
+
+
+//=============================================================================
+//      E3BlendingStyle_Set : Set the data for the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3BlendingStyle_Set(TQ3StyleObject styleObject, const TQ3BlendingStyleData* data)
+{
+	((E3BlendingStyle*)styleObject)->instanceData = *data;
+	Q3Shared_Edited(styleObject);
+
+	return kQ3Success;
 }
 

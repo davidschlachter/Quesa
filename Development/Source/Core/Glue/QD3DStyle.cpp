@@ -1704,3 +1704,119 @@ Q3LineWidthStyle_SetData (
 	return E3LineWidthStyle_Set( styleObject, inWidth );
 }
 
+
+
+
+//=============================================================================
+//      Q3BlendingStyle_New : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3StyleObject
+Q3BlendingStyle_New(const TQ3BlendingStyleData* _Nonnull data)
+{
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3BlendingStyle_New(data);
+}
+
+
+
+
+
+//=============================================================================
+//      Q3BlendingStyle_Submit : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3BlendingStyle_Submit(
+	const TQ3BlendingStyleData* _Nonnull data,
+	TQ3ViewObject	view
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT(E3View_IsOfMyClass(view), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3BlendingStyle_Submit(data, view);
+}
+
+
+
+
+
+//=============================================================================
+//      Q3BlendingStyle_GetData : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3BlendingStyle_GetData(
+	TQ3StyleObject			styleObject,
+	TQ3BlendingStyleData* _Nonnull data
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT(E3Style_IsOfMyClass(styleObject), kQ3Failure);
+	Q3_REQUIRE_OR_RESULT(Q3_VALID_PTR(data), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3BlendingStyle_Get(styleObject, data);
+}
+
+
+
+
+
+//=============================================================================
+//      Q3BlendingStyle_SetData : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3BlendingStyle_SetData(
+	TQ3StyleObject		styleObject,
+	const TQ3BlendingStyleData* _Nonnull data
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT(E3Style_IsOfMyClass(styleObject), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3BlendingStyle_Set(styleObject, data);
+}
+

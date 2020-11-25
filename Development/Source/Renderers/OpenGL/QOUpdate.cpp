@@ -553,3 +553,20 @@ void	QORenderer::Renderer::UpdateLineWidthStyle(
 	
 	mPPLighting.UpdateLineWidthStyle();
 }
+
+
+void	QORenderer::Renderer::UpdateBlendingStyle(
+									GLenum inStyleDataSrc, GLenum inStyleDataDst )
+{
+	// Activate our context
+	GLDrawContext_SetCurrent(mGLContext, kQ3False);
+
+
+	mTriBuffer.Flush();
+
+
+	mBlendingStyleData.srcFactor = inStyleDataSrc;
+	mBlendingStyleData.dstFactor = inStyleDataDst;
+
+	glBlendFunc(mBlendingStyleData.srcFactor, mBlendingStyleData.dstFactor);
+}

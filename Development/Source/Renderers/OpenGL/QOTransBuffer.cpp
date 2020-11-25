@@ -217,7 +217,9 @@ static bool IsSameStyle( const PrimStyleState& inA, const PrimStyleState& inB )
 		(inA.mInterpolationStyle == inB.mInterpolationStyle) &&
 		(inA.mIlluminationType == inB.mIlluminationType) &&
 		(inA.mFogStyleIndex == inB.mFogStyleIndex) &&
-		(fabsf( inA.mLineWidthStyle - inB.mLineWidthStyle ) < kQ3RealZero);
+		(fabsf( inA.mLineWidthStyle - inB.mLineWidthStyle ) < kQ3RealZero) &&
+		(inA.mBlendingStyleData.srcFactor == inB.mBlendingStyleData.srcFactor) &&
+		(inA.mBlendingStyleData.dstFactor == inB.mBlendingStyleData.dstFactor);
 }
 
 /*!
@@ -496,6 +498,7 @@ void	TransBuffer::AddPrim(
 	style.mIlluminationType = mRenderer.mViewIllumination;
 	style.mFogStyleIndex = mRenderer.mStyleState.mCurFogStyleIndex;
 	style.mLineWidthStyle = mRenderer.mLineWidth;
+	style.mBlendingStyleData = mRenderer.mBlendingStyleData;
 	if ( mStyles.empty() ||
 		(! IsSameStyle( style, mStyles[ mStyles.size() - 1 ])) )
 	{
@@ -777,6 +780,7 @@ void	TransBuffer::AddTriMesh(
 	style.mIlluminationType = mRenderer.mViewIllumination;
 	style.mFogStyleIndex = mRenderer.mStyleState.mCurFogStyleIndex;
 	style.mLineWidthStyle = mRenderer.mLineWidth;
+	style.mBlendingStyleData = mRenderer.mBlendingStyleData;
 	if ( mStyles.empty() ||
 		(! IsSameStyle( style, mStyles[ mStyles.size() - 1 ])) )
 	{
@@ -994,7 +998,7 @@ void	TransBuffer::InitGLState( TQ3ViewObject inView )
 	TQ3BackfacingStyle	theBackfacing = kQ3BackfacingStyleRemove;
 	mRenderer.UpdateBackfacingStyle( &theBackfacing );
 	
-	glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
+	mRenderer.UpdateBlendingStyle( mSrcBlendFactor, mDstBlendFactor );
 
 	mCurTexture = UINT32_MAX;	// force initial update
 	mPerPixelLighting.UpdateTexture( false );
@@ -1114,6 +1118,17 @@ void	TransBuffer::UpdateLineWidth( const TransparentPrim& inPrim )
 	if (mStyles[ inPrim.mStyleIndex ].mLineWidthStyle != mRenderer.mLineWidth)
 	{
 		mRenderer.UpdateLineWidthStyle( mStyles[ inPrim.mStyleIndex ].mLineWidthStyle );
+	}
+}
+
+void	TransBuffer::UpdateBlending( const TransparentPrim& inPrim )
+{
+	if (mStyles[inPrim.mStyleIndex].mBlendingStyleData.srcFactor != mRenderer.mBlendingStyleData.srcFactor ||
+		mStyles[inPrim.mStyleIndex].mBlendingStyleData.dstFactor != mRenderer.mBlendingStyleData.dstFactor)
+	{
+		mRenderer.UpdateBlendingStyle( 
+			mStyles[inPrim.mStyleIndex].mBlendingStyleData.srcFactor,
+			mStyles[inPrim.mStyleIndex].mBlendingStyleData.dstFactor);
 	}
 }
 
@@ -1260,6 +1275,7 @@ void	TransBuffer::RenderPrimGroup(
 	mPerPixelLighting.UpdateIllumination( mStyles[ leader.mStyleIndex ].mIlluminationType );
 	UpdateSpecular( leader );
 	UpdateEmission( leader );
+	UpdateBlending( leader );
 	mForceUpdate = false;
 
 	{
