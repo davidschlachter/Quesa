@@ -203,4 +203,11 @@
 #endif
 
 
+// Dumps GLSL shaders to files. You can then modify them and Quesa will pick up
+// your modified shaders next time the program runs.
+#ifndef QUESA_DUMP_SHADERS
+	#define QUESA_DUMP_SHADERS								0
+#endif
+
+
 #endif

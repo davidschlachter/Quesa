@@ -61,6 +61,11 @@
 #include <sstream>
 #include <cstdlib>
 
+#if QUESA_DUMP_SHADERS
+#include <iostream>
+#include <fstream>
+#endif
+
 #if WIN32
 	#undef max // make it possible to use std::max
 #endif
@@ -797,6 +802,23 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 	}
 	
 	outSource += kMainFragmentShaderEndSource;
+
+#if QUESA_DUMP_SHADERS
+	char path[256];
+	sprintf(path, "quesa-%07zx.frag", std::hash<std::string>{}(outSource) & 0x0FFFFFFFul);
+	std::ifstream inFile(path);
+	if (inFile.is_open())
+	{
+		printf("Using replacement fragment shader:\t%s\n", path);
+		outSource = std::string((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
+	}
+	else
+	{
+		printf("New fragment shader:\t%s\n", path);
+		std::ofstream outFile(path);
+		outFile << outSource;
+	}
+#endif
 }
 
 /*!
