@@ -633,7 +633,8 @@ QORenderer::SlowPathMask	QORenderer::Renderer::FindTriMeshData(
 	
 	SlowPathMask	slowMask = kSlowPathMask_FastPath;
 	
-	if (mTextures.IsTextureTransparent())
+	if ( mBlendingStyleData.forceCustomBlending == kQ3On ||
+		mTextures.IsTextureTransparent() )
 	{
 		slowMask |= kSlowPathMask_Transparency;
 	}
@@ -995,8 +996,9 @@ void	QORenderer::Renderer::RenderSlowPathTriMesh(
 									const MeshArrays& inData )
 {
 	bool suppressTransparency = false;
-	if ( IsSimplyTransparent( mAlphaThreshold, inData, mTextures, mGeomState ) and
-		(inData.vertNormal != nullptr) )
+	if ( inData.vertNormal != nullptr &&
+		( mBlendingStyleData.forceCustomBlending == kQ3On ||
+			IsSimplyTransparent( mAlphaThreshold, inData, mTextures, mGeomState ) ) )
 	{
 	#if 0//Q3_DEBUG
 		const char* theName = nullptr;

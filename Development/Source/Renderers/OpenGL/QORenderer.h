@@ -370,7 +370,7 @@ protected:
 	void					UpdateLineWidthStyle(
 									float inStyleData );
 	void					UpdateBlendingStyle(
-									GLenum inStyleDataSrc, GLenum inStyleDataDst );
+									const TQ3BlendingStyleData* inStyleData );
 	
 
 	//

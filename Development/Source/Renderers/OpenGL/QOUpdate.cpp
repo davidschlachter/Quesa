@@ -556,7 +556,7 @@ void	QORenderer::Renderer::UpdateLineWidthStyle(
 
 
 void	QORenderer::Renderer::UpdateBlendingStyle(
-									GLenum inStyleDataSrc, GLenum inStyleDataDst )
+									const TQ3BlendingStyleData* inStyleData )
 {
 	// Activate our context
 	GLDrawContext_SetCurrent(mGLContext, kQ3False);
@@ -565,8 +565,16 @@ void	QORenderer::Renderer::UpdateBlendingStyle(
 	mTriBuffer.Flush();
 
 
-	mBlendingStyleData.srcFactor = inStyleDataSrc;
-	mBlendingStyleData.dstFactor = inStyleDataDst;
+	mBlendingStyleData.forceCustomBlending = inStyleData->forceCustomBlending;
+	mBlendingStyleData.srcFactor = inStyleData->srcFactor;
+	mBlendingStyleData.dstFactor = inStyleData->dstFactor;
 
-	glBlendFunc(mBlendingStyleData.srcFactor, mBlendingStyleData.dstFactor);
+	if (mBlendingStyleData.forceCustomBlending == kQ3On)
+	{
+		glBlendFunc(mBlendingStyleData.srcFactor, mBlendingStyleData.dstFactor);
+	}
+	else
+	{
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	}
 }

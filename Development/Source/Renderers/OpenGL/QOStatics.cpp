@@ -693,7 +693,7 @@ TQ3Status	QORenderer::Statics::UpdateBlendingStyleMethod(
 #pragma unused( inView )
 	QORenderer::Renderer*	me = *(QORenderer::Renderer**)privateData;
 	const TQ3BlendingStyleData* blending = (TQ3BlendingStyleData*)publicData;
-	me->UpdateBlendingStyle( blending->srcFactor, blending->dstFactor );
+	me->UpdateBlendingStyle( blending );
 	return kQ3Success;
 }
 

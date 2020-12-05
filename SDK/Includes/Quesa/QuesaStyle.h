@@ -405,11 +405,16 @@ typedef struct TQ3FogStyleExtendedData
  *      Set the parameters in this structure to OpenGL blending mode
  *      enum values such as GL_ONE, GL_ONE_MINUS_SRC_ALPHA, etc.
  *
- *  @field srcFactor        Source blending factor.
- *  @field dstFactor        Destination blending factor.
+ *  @field forceCustomBlending		Whether to override the currently active alpha blending mode.
+ *									If kQ3On, meshes will be considered transparent
+ *									and the custom blending factors will be applied.
+ *									If kQ3Off, srcFactor and dstFactor will be ignored.
+ *  @field srcFactor				Source blending factor.
+ *  @field dstFactor				Destination blending factor.
  */
 typedef struct TQ3BlendingStyleData
 {
+	TQ3Switch forceCustomBlending;
 	TQ3Uns32 srcFactor;
 	TQ3Uns32 dstFactor;
 } TQ3BlendingStyleData;

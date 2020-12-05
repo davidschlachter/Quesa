@@ -208,6 +208,16 @@ static bool IsSameColor( const TQ3ColorRGB& inA, const TQ3ColorRGB& inB )
 	return absDiff < kQ3RealZero * 3.0f;
 }
 
+static bool IsSameBlendingStyle(const TQ3BlendingStyleData& inA, const TQ3BlendingStyleData& inB)
+{
+	return
+		(inA.forceCustomBlending == inB.forceCustomBlending) &&
+		(
+			inA.forceCustomBlending == kQ3Off ||		// Ignore factors if custom blending is off.
+			(inA.srcFactor == inB.srcFactor && inA.dstFactor == inB.dstFactor)
+		);
+}
+
 static bool IsSameStyle( const PrimStyleState& inA, const PrimStyleState& inB )
 {
 	return
@@ -218,8 +228,7 @@ static bool IsSameStyle( const PrimStyleState& inA, const PrimStyleState& inB )
 		(inA.mIlluminationType == inB.mIlluminationType) &&
 		(inA.mFogStyleIndex == inB.mFogStyleIndex) &&
 		(fabsf( inA.mLineWidthStyle - inB.mLineWidthStyle ) < kQ3RealZero) &&
-		(inA.mBlendingStyleData.srcFactor == inB.mBlendingStyleData.srcFactor) &&
-		(inA.mBlendingStyleData.dstFactor == inB.mBlendingStyleData.dstFactor);
+		(IsSameBlendingStyle(inA.mBlendingStyleData, inB.mBlendingStyleData));
 }
 
 /*!
@@ -997,8 +1006,9 @@ void	TransBuffer::InitGLState( TQ3ViewObject inView )
 	
 	TQ3BackfacingStyle	theBackfacing = kQ3BackfacingStyleRemove;
 	mRenderer.UpdateBackfacingStyle( &theBackfacing );
-	
-	mRenderer.UpdateBlendingStyle( mSrcBlendFactor, mDstBlendFactor );
+
+	TQ3BlendingStyleData	theBlending = { kQ3On, mSrcBlendFactor, mDstBlendFactor };
+	mRenderer.UpdateBlendingStyle( &theBlending );
 
 	mCurTexture = UINT32_MAX;	// force initial update
 	mPerPixelLighting.UpdateTexture( false );
@@ -1123,12 +1133,11 @@ void	TransBuffer::UpdateLineWidth( const TransparentPrim& inPrim )
 
 void	TransBuffer::UpdateBlending( const TransparentPrim& inPrim )
 {
-	if (mStyles[inPrim.mStyleIndex].mBlendingStyleData.srcFactor != mRenderer.mBlendingStyleData.srcFactor ||
-		mStyles[inPrim.mStyleIndex].mBlendingStyleData.dstFactor != mRenderer.mBlendingStyleData.dstFactor)
+	const TQ3BlendingStyleData& inBlendingStyle = mStyles[inPrim.mStyleIndex].mBlendingStyleData;
+
+	if (!IsSameBlendingStyle(inBlendingStyle, mRenderer.mBlendingStyleData))
 	{
-		mRenderer.UpdateBlendingStyle( 
-			mStyles[inPrim.mStyleIndex].mBlendingStyleData.srcFactor,
-			mStyles[inPrim.mStyleIndex].mBlendingStyleData.dstFactor);
+		mRenderer.UpdateBlendingStyle(&inBlendingStyle);
 	}
 }
 
