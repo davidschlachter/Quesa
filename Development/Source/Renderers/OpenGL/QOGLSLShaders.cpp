@@ -1846,6 +1846,18 @@ const char*	kAngleAffectOnAlpha = R"(
 )";
 
 
+#pragma mark kPremultiplyAlpha
+
+const char*	kPremultiplyAlpha = R"(
+	if ( alpha < 0.999 )
+	{
+		float unAlpha = 1.0 / (alpha + 0.0000001);
+		vec3 unPreColor = clamp( unAlpha * color, 0.0, 1.0 );
+		color = alpha * unPreColor;
+	}
+)";
+
+
 #pragma mark kMainFragmentShaderEndSource
 const char* kMainFragmentShaderEndSource = R"(
  	fragColor.rgb = color;

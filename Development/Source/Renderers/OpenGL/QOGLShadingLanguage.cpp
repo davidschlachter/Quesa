@@ -647,6 +647,7 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 {
 	const GLint kNumLights = static_cast<GLint>(inProgramRec.mPattern.size());
 	GLint i;
+	bool premultiplied = false;
 	
 	outSource += kFragmentShaderPrefix;
 	
@@ -794,13 +795,21 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 				break;
 		}
 		outSource += kMixFog;
+		premultiplied = true;
 	}
 	
 	if (inProgramRec.mAngleAffectsAlpha)
 	{
 		outSource += kAngleAffectOnAlpha;
+		premultiplied = true;
 	}
-	
+
+	if (!premultiplied)
+	{
+		outSource += kPremultiplyAlpha;
+		premultiplied = true;
+	}
+
 	outSource += kMainFragmentShaderEndSource;
 
 #if QUESA_DUMP_SHADERS
