@@ -120,7 +120,7 @@ isOpenGLExtensionPresent( const char* inNames, const char* inExtName )
 	{
 		while (inNames[0] != '\0')
 		{
-			unsigned long	firstExtLength = strcspn( inNames, " " );
+			size_t	firstExtLength = strcspn( inNames, " " );
 			
 			if ( (nameLength == firstExtLength) &&
 				(strncmp( inExtName, inNames, firstExtLength ) == 0) )

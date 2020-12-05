@@ -318,7 +318,7 @@ e3fformat_3dmf_text_readitem ( E3Text3DMFReader* format, char* theItem, TQ3Uns32
 //-----------------------------------------------------------------------------
 static TQ3Status
 e3read_3dmf_text_readflag(TQ3Uns32* flag, E3File* theFile, TQ3ObjectType hint)
-{	typedef struct dictEntry {
+{	typedef struct {
 		TQ3ObjectType hint;
 		char name[32];
 		TQ3Int32 value;

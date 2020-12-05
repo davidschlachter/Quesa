@@ -2026,7 +2026,7 @@ TQ3Point3D	E3AllSeeingCamera::ViewToFrustum( const TQ3Point3D& inViewPt ) const
 {
 	float near       = cameraData.range.hither;
 	float far        = cameraData.range.yon;
-	float q = isinf( far )? 1.0 : far / (far - near);
+	float q = isinf( far )? 1.0f : far / (far - near);
 	TQ3Vector3D eyeToPt = inViewPt - TQ3Point3D{ 0.0f, 0.0f, 0.0f };
 	float r = Q3Length3D( eyeToPt );
 
@@ -2040,7 +2040,7 @@ TQ3Point3D	E3AllSeeingCamera::ViewToFrustum( const TQ3Point3D& inViewPt ) const
 	
 	TQ3Point3D frustumPt = {
 		atan2f( inViewPt.x, -inViewPt.z ) / kQ3Pi,
-		2.0f * asin( inViewPt.y / r ) / kQ3Pi,
+		2.0f * asinf( inViewPt.y / r ) / kQ3Pi,
 		q * (near / r - 1.0f)
 	};
 	
@@ -2064,7 +2064,7 @@ TQ3Point3D	E3AllSeeingCamera::FrustumToView( const TQ3Point3D& inFrustumPt ) con
 
 	float near       = cameraData.range.hither;
 	float far        = cameraData.range.yon;
-	float q = isinf( far )? 1.0 : far / (far - near);
+	float q = isinf( far )? 1.0f : far / (far - near);
 	
 	// With r being the distance from the camera to the target point in view
 	// space, ViewToFrustum has the relationship
@@ -2202,7 +2202,7 @@ TQ3Point3D	E3FisheyeCamera::ViewToFrustum( const TQ3Point3D& inViewPt ) const
 	TQ3Point3D frustumPt;
 	float near = cameraData.range.hither;
 	float far = cameraData.range.yon;
-	float q = isinf( far )? 1.0 : far / (far - near);
+	float q = isinf( far )? 1.0f : far / (far - near);
 	float r = Q3Length3D( eyeToPt );
 	
 	// Looking at the fisheye shaders, we see how to compute z in NDC
@@ -2259,7 +2259,7 @@ TQ3Point3D	E3FisheyeCamera::FrustumToView( const TQ3Point3D& inFrustumPt ) const
 
 	float near = cameraData.range.hither;
 	float far = cameraData.range.yon;
-	float q = isinf( far )? 1.0 : far / (far - near);
+	float q = isinf( far )? 1.0f : far / (far - near);
 	
 	// With r being the distance from the camera to the target point in view
 	// space, ViewToFrustum has the relationship

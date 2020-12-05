@@ -190,7 +190,7 @@ gngeneric_nickname(unsigned char *dataBuffer, TQ3Uns32 bufferSize, TQ3Uns32 *act
 
 
 	// Return the amount of space we need
-    *actualDataSize = strlen(kRendererNickName) + 1;
+    *actualDataSize = (TQ3Uns32) strlen(kRendererNickName) + 1;
 
 
 

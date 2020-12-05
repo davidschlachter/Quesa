@@ -2981,7 +2981,7 @@ static TQ3Vector3D PickVectorOrthogonalToVector( const TQ3Vector3D& inDir )
 {
 	float	mags[3] = { fabsf( inDir.x ), fabsf( inDir.y ), fabsf( inDir.z ) };
 	float*	theMin = std::min_element( &mags[0], &mags[3] );
-	long minIndex = theMin - &mags[0];
+	ptrdiff_t minIndex = theMin - &mags[0];
 	TQ3Vector3D result;
 	if (minIndex == 0) // x coord is least
 	{
