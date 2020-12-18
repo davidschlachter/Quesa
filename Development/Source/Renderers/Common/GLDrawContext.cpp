@@ -1966,9 +1966,9 @@ void SDLGLContext::SetCurrent(TQ3Boolean inForceSet)
 		{
 			glEnable(GL_SCISSOR_TEST);
 		}
-	}
 
-	glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+		glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
+	}
 }
 
 void SDLGLContext::SwapBuffers()
