@@ -88,6 +88,14 @@ enum EFogModeCombined
 	kFogModePlaneBasedLinear,
 };
 
+enum ETexturingMode
+{
+	kTexturingModeInvalid = -1,
+	kTexturingModeOff = 0,
+	kTexturingModeAlphaTest,
+	kTexturingModeAlphaBlend,
+};
+
 enum class ECameraProjectionType
 {
 	standardRectilinear = 0,
@@ -132,7 +140,7 @@ struct ProgramCharacteristic
 	TQ3ObjectType			mIlluminationType;
 	TQ3InterpolationStyle	mInterpolationStyle;
 	TQ3FillStyle			mFillStyle;
-	bool					mIsTextured;
+	ETexturingMode			mTexturingMode;
 	bool					mIsCartoonish;
 	EFogModeCombined		mFogModeCombined;
 	bool					mIsUsingClippingPlane;

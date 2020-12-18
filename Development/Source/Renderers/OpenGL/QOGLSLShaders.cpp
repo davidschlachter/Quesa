@@ -1718,8 +1718,8 @@ const char* kColorCompForLambertAndPhong_Cartoonish = R"(
 )";
 
 
-#pragma mark kTexturedColorComp
-const char* kTexturedColorComp = R"(
+#pragma mark kTexturedColorComp_AlphaBlend
+const char* kTexturedColorComp_AlphaBlend = R"(
 	// Texturing, GL_MODULATE mode
 	{
 		vec4 texColor = texture( tex0, FSIN.texCoord );
@@ -1729,6 +1729,21 @@ const char* kTexturedColorComp = R"(
 		{
 			discard;
 		}
+	}
+
+)";
+
+
+#pragma mark kTexturedColorComp_AlphaTest
+const char* kTexturedColorComp_AlphaTest = R"(
+	// Texturing, alpha test only
+	{
+		vec4 texColor = texture( tex0, FSIN.texCoord );
+		if (texColor.a < alphaThreshold)
+		{
+			discard;
+		}
+		color *= texColor.rgb;
 	}
 
 )";

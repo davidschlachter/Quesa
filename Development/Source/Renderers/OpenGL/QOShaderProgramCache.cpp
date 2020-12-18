@@ -76,7 +76,7 @@ QORenderer::ProgramCharacteristic::ProgramCharacteristic()
 	, mIlluminationType( kQ3IlluminationTypeNULL )
 	, mInterpolationStyle( kQ3InterpolationStyleVertex )
 	, mFillStyle( kQ3FillStyleFilled )
-	, mIsTextured( false )
+	, mTexturingMode( kTexturingModeOff )
 	, mIsCartoonish( false )
 	, mFogModeCombined( kFogModeOff )
 	, mIsUsingClippingPlane( false )
@@ -92,7 +92,7 @@ QORenderer::ProgramCharacteristic::ProgramCharacteristic(
 	, mIlluminationType( inOther.mIlluminationType )
 	, mInterpolationStyle( inOther.mInterpolationStyle )
 	, mFillStyle( inOther.mFillStyle )
-	, mIsTextured( inOther.mIsTextured )
+	, mTexturingMode( inOther.mTexturingMode )
 	, mIsCartoonish( inOther.mIsCartoonish )
 	, mFogModeCombined( inOther.mFogModeCombined )
 	, mIsUsingClippingPlane( inOther.mIsUsingClippingPlane )
@@ -104,7 +104,7 @@ QORenderer::ProgramCharacteristic::ProgramCharacteristic(
 bool	QORenderer::ProgramCharacteristic::operator==(
 		const QORenderer::ProgramCharacteristic& inOther ) const
 {
-	return (mIsTextured == inOther.mIsTextured) &&
+	return (mTexturingMode == inOther.mTexturingMode) &&
 			(mProjectionType == inOther.mProjectionType) &&
 			(mIlluminationType == inOther.mIlluminationType) &&
 			(mInterpolationStyle == inOther.mInterpolationStyle) &&
@@ -126,7 +126,7 @@ void	QORenderer::ProgramCharacteristic::swap(
 	std::swap( mIlluminationType, ioOther.mIlluminationType );
 	std::swap( mInterpolationStyle, ioOther.mInterpolationStyle );
 	std::swap( mFillStyle, ioOther.mFillStyle );
-	std::swap( mIsTextured, ioOther.mIsTextured );
+	std::swap( mTexturingMode, ioOther.mTexturingMode );
 	std::swap( mIsCartoonish, ioOther.mIsCartoonish );
 	std::swap( mFogModeCombined, ioOther.mFogModeCombined );
 	std::swap( mIsUsingClippingPlane, ioOther.mIsUsingClippingPlane );

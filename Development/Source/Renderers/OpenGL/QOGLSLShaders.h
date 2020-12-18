@@ -91,7 +91,8 @@ namespace QOGLSLShader
 	extern const char* kColorCompForNULLIllumination;
 	extern const char* kColorCompForLambertAndPhong;
 	extern const char* kColorCompForLambertAndPhong_Cartoonish;
-	extern const char* kTexturedColorComp;
+	extern const char* kTexturedColorComp_AlphaBlend;
+	extern const char* kTexturedColorComp_AlphaTest;
 	extern const char* kAddSpecularColor;
 	extern const char* kCalcFogLinear;
 	extern const char* kCalcFogExp;

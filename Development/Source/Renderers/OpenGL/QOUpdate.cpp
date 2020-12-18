@@ -200,7 +200,7 @@ void	QORenderer::Renderer::UpdateSurfaceShader(
 	
 	
 	mTextures.SetCurrentTexture( theTexture.get(), inShader );
-	mPPLighting.UpdateTexture( theTexture.isvalid() );
+	mPPLighting.UpdateTexture( theTexture.isvalid() ? kTexturingModeAlphaTest : kTexturingModeOff );
 }
 
 

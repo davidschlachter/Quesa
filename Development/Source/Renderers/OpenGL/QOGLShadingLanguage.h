@@ -341,7 +341,7 @@ public:
 		@abstract	Notification that there has been a change in whether we
 					are texturing.
 	*/
-	void						UpdateTexture( bool inTexturing );
+	void						UpdateTexture( ETexturingMode inTexturingMode );
 	
 	/*!
 		@function	UpdateSpecularMapping

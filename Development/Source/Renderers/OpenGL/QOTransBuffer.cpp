@@ -1016,7 +1016,7 @@ void	TransBuffer::InitGLState( TQ3ViewObject inView )
 	mRenderer.UpdateBlendingStyle( &theBlending );
 
 	mCurTexture = UINT32_MAX;	// force initial update
-	mPerPixelLighting.UpdateTexture( false );
+	mPerPixelLighting.UpdateTexture( kTexturingModeOff );
 	mCurUVTransformIndex = UINT32_MAX;
 	mCurUBoundary = kQ3ShaderUVBoundarySize32;
 	mCurVBoundary = kQ3ShaderUVBoundarySize32;
@@ -1059,7 +1059,7 @@ void	TransBuffer::UpdateTexture( const TransparentPrim& inPrim )
 			glBindTexture( GL_TEXTURE_2D, mCurTexture );
 		}
 		
-		mPerPixelLighting.UpdateTexture( mCurTexture != 0 );
+		mPerPixelLighting.UpdateTexture( mCurTexture != 0 ? kTexturingModeAlphaBlend : kTexturingModeOff );
 	}
 	
 	if ( (inPrim.mUVTransformIndex != mCurUVTransformIndex) &&
@@ -1465,7 +1465,7 @@ void	TransBuffer::InitGLStateForDepth( TQ3ViewObject inView,
 	
 	// Turn off unneeded fragment operations
 	mPerPixelLighting.UpdateIllumination( kQ3IlluminationTypeNULL );
-	mPerPixelLighting.UpdateTexture( false );
+	mPerPixelLighting.UpdateTexture( kTexturingModeOff );
 	glDisable( GL_BLEND );
 	mCurTexture = UINT32_MAX;
 	mCurUVTransformIndex = UINT32_MAX;

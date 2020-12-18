@@ -757,11 +757,23 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 		outSource += kColorCompForLambertAndPhong;
 	}
 	
-	if (inProgramRec.mIsTextured)
+	switch (inProgramRec.mTexturingMode)
 	{
-		outSource += kTexturedColorComp;
+		case QORenderer::kTexturingModeOff:
+			break;
+
+		case QORenderer::kTexturingModeAlphaBlend:
+			outSource += kTexturedColorComp_AlphaBlend;
+			break;
+
+		case QORenderer::kTexturingModeAlphaTest:
+			outSource += kTexturedColorComp_AlphaTest;
+			break;
+
+		default:
+			break;
 	}
-	
+
 	if (inProgramRec.mIlluminationType == kQ3IlluminationTypePhong)
 	{
 		outSource += kAddSpecularColor;
@@ -1100,7 +1112,7 @@ void	QORenderer::PerPixelLighting::StartPass( TQ3CameraObject inCamera )
 {
 	++mPassNumber;
 	mProgramCharacteristic.mIlluminationType = kQ3IlluminationTypeNULL;
-	mProgramCharacteristic.mIsTextured = false;
+	mProgramCharacteristic.mTexturingMode = kTexturingModeOff;
 	mCurrentProgram = nullptr;
 	mMayNeedProgramChange = true;
 	mProgramCharacteristic.mIsCartoonish = (mQuantization > 0.0f);
@@ -1622,7 +1634,7 @@ static std::string DescribeProgram( const QORenderer::ProgramRec& inProgram )
 {
 	std::ostringstream desc;
 	DescribeLights( inProgram.mCharacteristic, desc );
-	desc << (inProgram.mCharacteristic.mIsTextured? "T+" : "T-");
+	desc << (inProgram.mCharacteristic.mTexturingMode != QORenderer::kTexturingModeOff? "T+" : "T-");
 	switch (inProgram.mCharacteristic.mIlluminationType)
 	{
 	case kQ3IlluminationTypePhong:
@@ -2050,11 +2062,11 @@ void	QORenderer::PerPixelLighting::UpdateLighting()
 	@abstract	Notification that there has been a change in whether we
 				are texturing.
 */
-void	QORenderer::PerPixelLighting::UpdateTexture( bool inTexturing  )
+void	QORenderer::PerPixelLighting::UpdateTexture( ETexturingMode inTexturingMode )
 {
-	if (inTexturing != mProgramCharacteristic.mIsTextured)
+	if (inTexturingMode != mProgramCharacteristic.mTexturingMode)
 	{
-		mProgramCharacteristic.mIsTextured = inTexturing;
+		mProgramCharacteristic.mTexturingMode = inTexturingMode;
 		
 		mMayNeedProgramChange = true;
 	}
