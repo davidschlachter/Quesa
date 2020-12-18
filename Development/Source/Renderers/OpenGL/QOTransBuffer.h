@@ -84,6 +84,7 @@ struct TransparentPrim
 	TQ3ShaderUVBoundary	mShaderUBoundary;
 	TQ3ShaderUVBoundary	mShaderVBoundary;
 	TQ3Uns32			mUVTransformIndex;
+	float				mAlphaTestThreshold;
 	
 	TQ3ColorRGB			mSpecularColor;
 	float				mSpecularControl;
@@ -245,6 +246,7 @@ private:
 	TQ3Uns32						mCurUVTransformIndex;
 	TQ3ShaderUVBoundary				mCurUBoundary;
 	TQ3ShaderUVBoundary				mCurVBoundary;
+	float							mCurAlphaTestThreshold;
 	GLenum							mSrcBlendFactor;
 	GLenum							mDstBlendFactor;
 	

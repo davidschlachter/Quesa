@@ -247,11 +247,13 @@ static bool IsSameState( const TransparentPrim& inA, const TransparentPrim& inB 
 		IsSameColor( EmissiveColor( inA ), EmissiveColor( inB ) );
 	
 	// UV transform and U, V boundary only matter if there is a texture.
+	// Same for alpha test threshold.
 	if ( isSame && (inA.mTextureName != 0) )
 	{
 		isSame = (inA.mShaderUBoundary == inB.mShaderUBoundary) &&
 			(inA.mShaderVBoundary == inB.mShaderVBoundary) &&
-			(inA.mUVTransformIndex == inB.mUVTransformIndex);
+			(inA.mUVTransformIndex == inB.mUVTransformIndex) &&
+			(fabsf( inA.mAlphaTestThreshold - inB.mAlphaTestThreshold ) < kQ3RealZero);
 	}
 	
 	// Primitives can only be consolidated into an array if all the vertices
@@ -298,7 +300,8 @@ static bool IsSameStateForDepth( const TransparentPrim& inA, const TransparentPr
 	{
 		isSame = (inA.mShaderUBoundary == inB.mShaderUBoundary) &&
 			(inA.mShaderVBoundary == inB.mShaderVBoundary) &&
-			(inA.mUVTransformIndex == inB.mUVTransformIndex);
+			(inA.mUVTransformIndex == inB.mUVTransformIndex) &&
+			(fabsf( inA.mAlphaTestThreshold - inB.mAlphaTestThreshold ) < kQ3RealZero);
 	}
 	
 	// Primitives can only be consolidated into an array if all the vertices
@@ -480,6 +483,7 @@ void	TransBuffer::AddPrim(
 	{
 		thePrim.mTextureName = textureState.mGLTextureObject;
 		thePrim.mIsTextureTransparent = textureState.mIsTextureTransparent;
+		thePrim.mAlphaTestThreshold = textureState.mIsTextureAlphaTest ? textureState.mAlphaTestThreshold : 0.0f;
 		thePrim.mShaderUBoundary = textureState.mShaderUBoundary;
 		thePrim.mShaderVBoundary = textureState.mShaderVBoundary;
 		if ( mUVTransforms.empty() ||
@@ -821,6 +825,7 @@ void	TransBuffer::AddTriMesh(
 	{
 		thePrim.mTextureName = textureState.mGLTextureObject;
 		thePrim.mIsTextureTransparent = textureState.mIsTextureTransparent;
+		thePrim.mAlphaTestThreshold = textureState.mIsTextureAlphaTest ? textureState.mAlphaTestThreshold : 0.0f;
 		thePrim.mShaderUBoundary = textureState.mShaderUBoundary;
 		thePrim.mShaderVBoundary = textureState.mShaderVBoundary;
 		if ( mUVTransforms.empty() ||
@@ -1015,6 +1020,10 @@ void	TransBuffer::InitGLState( TQ3ViewObject inView )
 	mCurUVTransformIndex = UINT32_MAX;
 	mCurUBoundary = kQ3ShaderUVBoundarySize32;
 	mCurVBoundary = kQ3ShaderUVBoundarySize32;
+
+	// Initial alpha threshold from renderer
+	mCurAlphaTestThreshold = mRenderer.mAlphaThreshold;
+	mPerPixelLighting.SetAlphaThreshold( mCurAlphaTestThreshold );
 	
 	mRenderer.SetSpecularColor( kBlackColor );
 	mRenderer.SetSpecularControl( 0.0 );
@@ -1076,6 +1085,13 @@ void	TransBuffer::UpdateTexture( const TransparentPrim& inPrim )
 		GLint	vBoundary;
 		GLUtils_ConvertUVBoundary( mCurVBoundary, &vBoundary );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, vBoundary );
+	}
+
+	if ( (mCurTexture != 0) &&
+		(fabs(inPrim.mAlphaTestThreshold - mCurAlphaTestThreshold) > kQ3RealZero) )
+	{
+		mCurAlphaTestThreshold = inPrim.mAlphaTestThreshold;
+		mPerPixelLighting.SetAlphaThreshold(mCurAlphaTestThreshold);
 	}
 }
 
@@ -1473,6 +1489,7 @@ void	TransBuffer::InitGLStateForDepth( TQ3ViewObject inView,
 	glPolygonOffset( 1.0f, 1.0f );
 
 	// Set up alpha test
+	mCurAlphaTestThreshold = inAlphaThreshold;
 	mPerPixelLighting.SetAlphaThreshold( inAlphaThreshold );
 	
 	mRenderer.SetSpecularColor( kBlackColor );

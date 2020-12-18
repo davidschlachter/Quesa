@@ -292,7 +292,7 @@ void Texture::TextureState::Reset()
 	mIsTextureTransparent = false;
 	mIsTextureMipmapped = false;
 	mIsTextureAlphaTest = false;
-	mAlphaTestThreshold = 0.5f;
+	mAlphaTestThreshold = 0.0f;
 	mGLTextureObject = 0;
 }
 
