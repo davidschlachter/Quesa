@@ -1401,7 +1401,9 @@ void	TransBuffer::DrawTransparency( TQ3ViewObject inView,
 		mSrcBlendFactor = inSrcBlendFactor;
 		mDstBlendFactor = inDstBlendFactor;
 		
+#if !(QUESA_NO_TRANSPARENCY_SORT)
 		SortIndices();
+#endif
 
 		InitGLState( inView );
 		
@@ -1414,7 +1416,11 @@ void	TransBuffer::DrawTransparency( TQ3ViewObject inView,
 			TransparentBlock& block( *mBlocks[blockNum] );
 			for (TQ3Uns32 primNum = 0; primNum < block.mPrims.size(); ++primNum)
 			{
+#if QUESA_NO_TRANSPARENCY_SORT
+				const TransparentPrim& thePrim( block.mPrims[primNum] );
+#else
 				const TransparentPrim& thePrim( *block.mPrimPtrs[primNum] );
+#endif
 				if (gpLeader == nullptr)
 				{
 					gpLeader = &thePrim;
@@ -1514,7 +1520,9 @@ void	TransBuffer::DrawDepth( TQ3ViewObject inView )
 	{
 		InitGLStateForDepth( inView, alphaThreshold );
 
+#if !(QUESA_NO_TRANSPARENCY_SORT)
 		SortIndices();
+#endif
 		
 		mRenderGroup.clear();
 		mRenderGroup.reserve( kRenderGroupReserve );
@@ -1525,7 +1533,11 @@ void	TransBuffer::DrawDepth( TQ3ViewObject inView )
 			TransparentBlock& block( *mBlocks[blockNum] );
 			for (TQ3Uns32 primNum = 0; primNum < block.mPrims.size(); ++primNum)
 			{
+#if QUESA_NO_TRANSPARENCY_SORT
+				const TransparentPrim& thePrim( block.mPrims[primNum] );
+#else
 				const TransparentPrim& thePrim( *block.mPrimPtrs[primNum] );
+#endif
 				if (gpLeader == nullptr)
 				{
 					gpLeader = &thePrim;
