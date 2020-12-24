@@ -316,6 +316,13 @@ public:
 	void						UpdateLineWidthStyle();
 
 	/*!
+		@function	UpdateZWriteTransparencyStyle
+		@abstract	Notification that the z-write transparency flag has changed.
+	*/
+	void						UpdateZWriteTransparencyStyle();
+
+
+	/*!
 		@function	UpdateBackfacingStyle
 		@abstract	Notification that the type of backfacing style may have
 					changed.

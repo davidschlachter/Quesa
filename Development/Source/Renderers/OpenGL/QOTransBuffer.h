@@ -71,6 +71,7 @@ struct PrimStyleState
 	TQ3Uns32			mFogStyleIndex;
 	float				mLineWidthStyle;
 	TQ3BlendingStyleData mBlendingStyleData;
+	TQ3Switch 			mZWriteTransparencyStyle;
 };
 
 struct TransparentPrim
@@ -217,6 +218,8 @@ private:
 	void							UpdateEmission(
 											const TransparentPrim& inPrim );
 	void							UpdateBlending(
+											const TransparentPrim& inPrim);
+	void							UpdateZWriteTransparency(
 											const TransparentPrim& inPrim);
 
 	void							RenderPrimGroup(

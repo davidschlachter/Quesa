@@ -1542,6 +1542,81 @@ Q3BlendingStyle_SetData(
 );
 
 
+
+/*!
+	@functiongroup Z-write transparency
+*/
+
+
+/*!
+ *  @function
+ *      Q3ZWriteTransparencyStyle_New
+ *  @discussion
+ *      Create a Z-write transparency style.
+ *
+ *  @param inEnabled        The style data.
+ *  @result                 The new style.
+ */
+Q3_EXTERN_API_C(TQ3StyleObject _Nonnull)
+Q3ZWriteTransparencyStyle_New(
+		TQ3Switch inEnabled
+);
+
+
+
+/*!
+ *  @function
+ *      Q3ZWriteTransparencyStyleSubmit
+ *  @discussion
+ *      Submit a Z-write transparency style to a view.
+ *
+ *  @param inEnabled        The style data.
+ *  @param view             The view to submit the style to.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3ZWriteTransparencyStyle_Submit(
+		TQ3Switch                             inEnabled,
+		TQ3ViewObject _Nonnull                view
+);
+
+
+
+/*!
+ *  @function
+ *      Q3ZWriteTransparencyStyle_GetData
+ *  @discussion
+ *      Get the data from a Z-write transparency style.
+ *
+ *  @param styleObject      The style to query.
+ *  @param outEnabled       Receives the data from the style.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3ZWriteTransparencyStyle_GetData(
+		TQ3StyleObject _Nonnull               styleObject,
+		TQ3Switch    * _Nonnull               outEnabled
+);
+
+
+
+/*!
+ *  @function
+ *      Q3ZWriteTransparencyStyle_SetData
+ *  @discussion
+ *      Set the data for a Z-write transparency style.
+ *
+ *  @param styleObject      The style to update.
+ *  @param data             The new data for the style.
+ *  @result                 Success or failure of the operation.
+ */
+Q3_EXTERN_API_C(TQ3Status)
+Q3ZWriteTransparencyStyle_SetData(
+		TQ3StyleObject _Nonnull               styleObject,
+		TQ3Switch                             inEnabled
+);
+
+
 #endif // QUESA_ALLOW_QD3D_EXTENSIONS
 
 

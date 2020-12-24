@@ -371,7 +371,9 @@ protected:
 									float inStyleData );
 	void					UpdateBlendingStyle(
 									const TQ3BlendingStyleData* inStyleData );
-	
+	void					UpdateZWriteTransparencyStyle(
+									TQ3Switch inEnabled );
+
 
 	//
 	//	Helper methods
@@ -452,6 +454,7 @@ protected:
 	TQ3ColorRGB				mCurrentEmissiveColor;
 	float 					mLineWidth;
 	TQ3BlendingStyleData	mBlendingStyleData;
+	TQ3Switch 				mZWriteTransparency;
 	TQ3XAttributeMask		mAttributesMask;
 	bool					mUpdateShader;
 	TQ3Float32				mAlphaThreshold; // cached value of kQ3RendererPropertyAlphaThreshold

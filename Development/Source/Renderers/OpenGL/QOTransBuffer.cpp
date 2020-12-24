@@ -228,7 +228,9 @@ static bool IsSameStyle( const PrimStyleState& inA, const PrimStyleState& inB )
 		(inA.mIlluminationType == inB.mIlluminationType) &&
 		(inA.mFogStyleIndex == inB.mFogStyleIndex) &&
 		(fabsf( inA.mLineWidthStyle - inB.mLineWidthStyle ) < kQ3RealZero) &&
-		(IsSameBlendingStyle(inA.mBlendingStyleData, inB.mBlendingStyleData));
+		(IsSameBlendingStyle(inA.mBlendingStyleData, inB.mBlendingStyleData)) &&
+		(inA.mZWriteTransparencyStyle == inB.mZWriteTransparencyStyle) // TODO: this might be moved to IsSameStateForDepth?
+		;
 }
 
 /*!
@@ -512,6 +514,7 @@ void	TransBuffer::AddPrim(
 	style.mFogStyleIndex = mRenderer.mStyleState.mCurFogStyleIndex;
 	style.mLineWidthStyle = mRenderer.mLineWidth;
 	style.mBlendingStyleData = mRenderer.mBlendingStyleData;
+	style.mZWriteTransparencyStyle = mRenderer.mZWriteTransparency;
 	if ( mStyles.empty() ||
 		(! IsSameStyle( style, mStyles[ mStyles.size() - 1 ])) )
 	{
@@ -794,6 +797,7 @@ void	TransBuffer::AddTriMesh(
 	style.mFogStyleIndex = mRenderer.mStyleState.mCurFogStyleIndex;
 	style.mLineWidthStyle = mRenderer.mLineWidth;
 	style.mBlendingStyleData = mRenderer.mBlendingStyleData;
+	style.mZWriteTransparencyStyle = mRenderer.mZWriteTransparency;
 	if ( mStyles.empty() ||
 		(! IsSameStyle( style, mStyles[ mStyles.size() - 1 ])) )
 	{
@@ -1179,7 +1183,16 @@ void	TransBuffer::RenderPrimGroupForDepth(
 										TQ3ViewObject inView )
 {
 	const TransparentPrim& leader( *mRenderGroup[0] );
-	
+
+	if (kQ3Off == mStyles[ leader.mStyleIndex ].mZWriteTransparencyStyle)
+	{
+		return;
+	}
+	else
+	{
+		Q3_ASSERT(mStyles[leader.mStyleIndex].mZWriteTransparencyStyle == kQ3On);
+	}
+
 	UpdateCameraToFrustum( leader, inView );
 	UpdateTexture( leader );
 	UpdateFill( leader );

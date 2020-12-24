@@ -100,6 +100,7 @@ enum {
 	kQ3ViewStateAttributeEmissiveColor		= 1 << 27,		// Emissive color attribute changed
 	kQ3ViewStateStyleLineWidth				= 1 << 28,		// Line Width style changed
 	kQ3ViewStateStyleBlending				= 1 << 29,		// Blending style changed
+	kQ3ViewStateStyleZWriteTransparency		= 1 << 30,		// Z-Write transparency style changed
 	kQ3ViewStateNone						= 0,			// Nothing changed
 	kQ3ViewStateAll							= 0xFFFFFFFF,	// Everything changed
 	kQ3ViewStateMatrixAny					= kQ3ViewStateMatrixLocalToWorld  |	// Any matrix changed
@@ -150,6 +151,7 @@ typedef struct TQ3ViewStackItem {
 	TQ3FogStyleExtendedData		styleFogExtended;
 	float						styleLineWidth;
 	TQ3BlendingStyleData		styleBlending;
+	TQ3Switch					styleZWriteTransparency;
 	TQ3Param2D					attributeSurfaceUV;
 	TQ3Param2D					attributeShadingUV;
 	TQ3Vector3D					attributeNormal;
@@ -361,6 +363,7 @@ e3view_stack_initialise(TQ3ViewStackItem *theItem)
 	theItem->styleLineWidth			 = 1.0f;
 	theItem->styleBlending.srcFactor = GL_ONE;
 	theItem->styleBlending.dstFactor = GL_ONE_MINUS_SRC_ALPHA;
+	theItem->styleZWriteTransparency = kQ3On;
 
 	theItem->attributeAmbientCoefficient = kQ3ViewDefaultAmbientCoefficient;
 	theItem->attributeSpecularControl    = kQ3ViewDefaultSpecularControl;
@@ -554,6 +557,9 @@ e3view_stack_update ( E3View* view, TQ3ViewStackState stateChange )
 
 		if ((stateChange & kQ3ViewStateStyleBlending) && qd3dStatus != kQ3Failure)
 			qd3dStatus = E3Renderer_Method_UpdateStyle( view, kQ3StyleTypeBlending, &theItem->styleBlending );
+
+		if ((stateChange & kQ3ViewStateStyleZWriteTransparency) && qd3dStatus != kQ3Failure)
+			qd3dStatus = E3Renderer_Method_UpdateStyle( view, kQ3StyleTypeZWriteTransparency, &theItem->styleZWriteTransparency );
 
 		if ( ( stateChange & kQ3ViewStateAttributeSurfaceUV ) && qd3dStatus != kQ3Failure )
 			qd3dStatus = e3view_stack_update_attribute ( view, theItem, kQ3AttributeTypeSurfaceUV, &theItem->attributeSurfaceUV ) ;
@@ -3381,6 +3387,29 @@ E3View_State_SetStyleBlending(TQ3ViewObject theView, const TQ3BlendingStyleData*
 		// Update the renderer
 		e3view_stack_update((E3View*)theView, kQ3ViewStateStyleBlending);
 	}
+}
+
+
+
+
+//=============================================================================
+//      E3View_State_SetStyleZWriteTransparency : Set the Z-write transparency state.
+//-----------------------------------------------------------------------------
+void
+E3View_State_SetStyleZWriteTransparency(TQ3ViewObject theView, TQ3Switch inEnabled)
+{
+	// Validate our state
+	Q3_ASSERT ( Q3_VALID_PTR ( ( (E3View*) theView )->instanceData.viewStack ) ) ;
+
+
+
+	// Set the value
+	( (E3View*) theView )->instanceData.viewStack->styleZWriteTransparency = inEnabled;
+
+
+
+	// Update the renderer
+	e3view_stack_update ( (E3View*) theView, kQ3ViewStateStyleZWriteTransparency ) ;
 }
 
 

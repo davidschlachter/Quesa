@@ -142,6 +142,10 @@ TQ3Status			E3BlendingStyle_Submit(const TQ3BlendingStyleData *data, TQ3ViewObje
 TQ3Status			E3BlendingStyle_Get(TQ3StyleObject styleObject, TQ3BlendingStyleData* data);
 TQ3Status			E3BlendingStyle_Set(TQ3StyleObject styleObject, const TQ3BlendingStyleData* data);
 
+TQ3StyleObject		E3ZWriteTransparencyStyle_New(TQ3Switch inEnabled);
+TQ3Status			E3ZWriteTransparencyStyle_Submit(TQ3Switch inEnabled, TQ3ViewObject theView);
+TQ3Status			E3ZWriteTransparencyStyle_Get(TQ3StyleObject styleObject, TQ3Switch *outEnabled);
+TQ3Status			E3ZWriteTransparencyStyle_Set(TQ3StyleObject styleObject, TQ3Switch inEnabled);
 
 
 

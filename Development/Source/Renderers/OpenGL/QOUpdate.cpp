@@ -578,3 +578,19 @@ void	QORenderer::Renderer::UpdateBlendingStyle(
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	}
 }
+
+
+void	QORenderer::Renderer::UpdateZWriteTransparencyStyle(
+		TQ3Switch inStyleData )
+{
+	// Activate our context
+	GLDrawContext_SetCurrent( mGLContext, kQ3False );
+
+
+	mTriBuffer.Flush();
+
+
+	mZWriteTransparency = inStyleData;
+
+	mPPLighting.UpdateZWriteTransparencyStyle();
+}

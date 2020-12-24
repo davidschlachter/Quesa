@@ -698,6 +698,19 @@ TQ3Status	QORenderer::Statics::UpdateBlendingStyleMethod(
 }
 
 
+TQ3Status	QORenderer::Statics::UpdateZWriteTransparencyStyleMethod(
+		TQ3ViewObject inView,
+		void* privateData,
+		const void* publicData )
+{
+#pragma unused( inView )
+	QORenderer::Renderer*	me = *(QORenderer::Renderer**)privateData;
+	me->UpdateZWriteTransparencyStyle( * (TQ3Switch *) publicData );
+	return kQ3Success;
+}
+
+
+
 TQ3Status	QORenderer::Statics::UpdateFogStyleExtendedMethod(
 								TQ3ViewObject inView,
 								void* privateData,
@@ -770,6 +783,11 @@ TQ3XRendererUpdateStyleMethod
 		case kQ3StyleTypeBlending:
 			theMethod = (TQ3XRendererUpdateStyleMethod)
 				&QORenderer::Statics::UpdateBlendingStyleMethod;
+			break;
+
+		case kQ3StyleTypeZWriteTransparency:
+			theMethod = (TQ3XRendererUpdateStyleMethod)
+				&QORenderer::Statics::UpdateZWriteTransparencyStyleMethod;
 			break;
 	}
 	

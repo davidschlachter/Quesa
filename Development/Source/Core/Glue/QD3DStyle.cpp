@@ -1820,3 +1820,122 @@ Q3BlendingStyle_SetData(
 	return E3BlendingStyle_Set(styleObject, data);
 }
 
+
+
+
+//=============================================================================
+//      Q3ZWriteTransparencyStyle_New : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3StyleObject
+Q3ZWriteTransparencyStyle_New( TQ3Switch inEnabled )
+{
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3ZWriteTransparencyStyle_New( inEnabled );
+}
+
+
+
+
+
+//=============================================================================
+//      Q3ZWriteTransparencyStyle_Submit : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3ZWriteTransparencyStyle_Submit (
+		TQ3Switch		inEnabled,
+		TQ3ViewObject	view
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT( E3View_IsOfMyClass ( view ), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3ZWriteTransparencyStyle_Submit( inEnabled, view );
+}
+
+
+
+
+
+//=============================================================================
+//      Q3ZWriteTransparencyStyle_GetData : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3ZWriteTransparencyStyle_GetData (
+		TQ3StyleObject			styleObject,
+		TQ3Switch 				*outEnabled
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT( E3Style_IsOfMyClass ( styleObject ), kQ3Failure);
+	Q3_REQUIRE_OR_RESULT(Q3_VALID_PTR(outEnabled), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3ZWriteTransparencyStyle_Get(styleObject, outEnabled);
+}
+
+
+
+
+
+//=============================================================================
+//      Q3ZWriteTransparencyStyle_SetData : Quesa API entry point.
+//-----------------------------------------------------------------------------
+TQ3Status
+Q3ZWriteTransparencyStyle_SetData (
+		TQ3StyleObject		styleObject,
+		TQ3Switch 			inEnabled
+)
+{
+	// Release build checks
+	Q3_REQUIRE_OR_RESULT( E3Style_IsOfMyClass ( styleObject ), kQ3Failure);
+
+
+
+	// Debug build checks
+
+
+
+	// Call the bottleneck
+	E3System_Bottleneck();
+
+
+
+	// Call our implementation
+	return E3ZWriteTransparencyStyle_Set( styleObject, inEnabled );
+}
+
+
+
+

@@ -253,6 +253,18 @@ public:
 };
 
 
+class E3ZWriteTransparencyStyle : public E3Style  // This is a leaf class so no other classes use this,
+	// so it can be here in the .c file rather than in
+	// the .h file, hence all the fields can be public
+	// as nobody should be including this file
+{
+	Q3_CLASS_ENUMS ( kQ3StyleTypeZWriteTransparency, E3ZWriteTransparencyStyle, E3Style )
+public :
+
+	TQ3Switch				instanceData ;
+} ;
+
+
 
 //=============================================================================
 //      Internal functions
@@ -1005,6 +1017,54 @@ e3style_blending_metahandler(TQ3XMethodType methodType)
 
 
 //=============================================================================
+//      e3style_zwritetransparency_submit : Z-Write Transparency submit method.
+//-----------------------------------------------------------------------------
+#pragma mark -
+static TQ3Status
+e3style_zwritetransparency_submit(TQ3ViewObject theView, TQ3ObjectType objectType,
+						 TQ3Object theObject, const void *objectData)
+{
+#pragma unused(objectType)
+#pragma unused(theObject)
+	const TQ3Switch			*instanceData = (const TQ3Switch *) objectData;
+
+
+
+	// Submit the style
+	E3View_State_SetStyleZWriteTransparency(theView, *instanceData);
+
+	return(kQ3Success);
+}
+
+
+
+
+
+//=============================================================================
+//      e3style_zwritetransparency_metahandler : Z-Write Transparency metahandler.
+//-----------------------------------------------------------------------------
+static TQ3XFunctionPointer
+e3style_zwritetransparency_metahandler(TQ3XMethodType methodType)
+{	TQ3XFunctionPointer		theMethod = nullptr;
+
+
+
+	// Return our methods
+	switch (methodType) {
+		case kQ3XMethodTypeObjectSubmitRender:
+		case kQ3XMethodTypeObjectSubmitPick:
+		case kQ3XMethodTypeObjectSubmitBounds:
+			theMethod = (TQ3XFunctionPointer) e3style_zwritetransparency_submit;
+			break;
+	}
+
+	return(theMethod);
+}
+
+
+
+
+//=============================================================================
 //      Public functions
 //-----------------------------------------------------------------------------
 //      E3Style_RegisterClass : Register the class.
@@ -1091,6 +1151,11 @@ E3Style_RegisterClass(void)
 											e3style_blending_metahandler,
 											E3BlendingStyle ) ;
 
+	if (qd3dStatus == kQ3Success)
+		qd3dStatus = Q3_REGISTER_CLASS (	kQ3ClassNameStyleZWriteTransparency,
+											e3style_zwritetransparency_metahandler,
+											E3ZWriteTransparencyStyle ) ;
+
 	return(qd3dStatus);
 }
 
@@ -1122,6 +1187,7 @@ E3Style_UnregisterClass(void)
 	E3ClassTree::UnregisterClass(kQ3StyleTypeSubdivision,			 kQ3True);
 	E3ClassTree::UnregisterClass(kQ3StyleTypeLineWidth,     		 kQ3True);
 	E3ClassTree::UnregisterClass(kQ3StyleTypeBlending,               kQ3True);
+	E3ClassTree::UnregisterClass(kQ3StyleTypeZWriteTransparency,     kQ3True);
 	E3ClassTree::UnregisterClass(kQ3ShapeTypeStyle,     			 kQ3True);
 
 	return(kQ3Success);
@@ -2195,6 +2261,62 @@ TQ3Status			E3BlendingStyle_Get(TQ3StyleObject styleObject, TQ3BlendingStyleData
 TQ3Status			E3BlendingStyle_Set(TQ3StyleObject styleObject, const TQ3BlendingStyleData* data)
 {
 	((E3BlendingStyle*)styleObject)->instanceData = *data;
+	Q3Shared_Edited(styleObject);
+
+	return kQ3Success;
+}
+
+
+
+//=============================================================================
+//      E3ZWriteTransparencyStyle_New : Create a new blending style.
+//-----------------------------------------------------------------------------
+#pragma mark -
+TQ3StyleObject		E3ZWriteTransparencyStyle_New(const TQ3Switch inEnabled)
+{
+	TQ3StyleObject theObject = E3ClassTree::CreateInstance(kQ3StyleTypeZWriteTransparency, kQ3False, &inEnabled);
+
+	return(theObject);
+}
+
+
+
+
+
+//=============================================================================
+//      E3ZWriteTransparencyStyle_Submit : Submit the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3ZWriteTransparencyStyle_Submit(const TQ3Switch inEnabled, TQ3ViewObject theView)
+{
+	TQ3Status qd3dStatus = E3View_SubmitImmediate(theView, kQ3StyleTypeZWriteTransparency, &inEnabled);
+
+	return(qd3dStatus);
+}
+
+
+
+
+
+//=============================================================================
+//      E3ZWriteTransparencyStyle_Get : Get the data for the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3ZWriteTransparencyStyle_Get(TQ3StyleObject styleObject, TQ3Switch* outEnabled)
+{
+	*outEnabled = ((E3ZWriteTransparencyStyle*)styleObject)->instanceData;
+
+	return kQ3Success;
+}
+
+
+
+
+
+//=============================================================================
+//      E3ZWriteTransparencyStyle_Set : Set the data for the style.
+//-----------------------------------------------------------------------------
+TQ3Status			E3ZWriteTransparencyStyle_Set(TQ3StyleObject styleObject, const TQ3Switch inEnabled)
+{
+	((E3ZWriteTransparencyStyle*)styleObject)->instanceData = inEnabled;
 	Q3Shared_Edited(styleObject);
 
 	return kQ3Success;

@@ -185,7 +185,8 @@ e3renderer_add_methods(TQ3RendererObject theRenderer)
 														kQ3StyleTypeFog,
 														kQ3StyleTypeFogExtended,
 														kQ3StyleTypeLineWidth,
-														kQ3StyleTypeBlending };
+														kQ3StyleTypeBlending,
+														kQ3StyleTypeZWriteTransparency };
 
 
 

@@ -1884,6 +1884,16 @@ void	QORenderer::PerPixelLighting::UpdateLineWidthStyle()
 
 
 /*!
+	@function	UpdateZWriteTransparencyStyle
+	@abstract	Notification that the z-write transparency style has changed.
+*/
+void	QORenderer::PerPixelLighting::UpdateZWriteTransparencyStyle()
+{
+	mMayNeedProgramChange = true;		// TODO: really needed?
+}
+
+
+/*!
 	@function	UpdateFillStyle
 	@abstract	Notification that the fill style may have changed.
 */

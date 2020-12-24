@@ -285,6 +285,11 @@ private:
 									TQ3ViewObject inView,
 									void* privateData,
 									const void* publicData );
+
+	static TQ3Status			UpdateZWriteTransparencyStyleMethod(
+									TQ3ViewObject inView,
+									void* privateData,
+									const void* publicData );
 };
 	
 }
