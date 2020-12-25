@@ -602,44 +602,50 @@ static void LogShaderCompileError( GLint inShaderID, const QORenderer::GLSLFuncs
 	#define		LogShaderCompileError( x, y )
 #endif
 
-static char LightTypeLetter( QORenderer::ELightType inType )
+static char GetLetter(int code, const std::string& letters, int offset = 0)
 {
-	char theChar = ' ';
-	char typeLetters[] =
-	{
-		'x',
-		'0',
-		'D',
-		'P',
-		'S',
-		'L',
-		'E',
-		'C',
-		'3'
-	};
-	
-	theChar = typeLetters[ inType + 1 ];
-	
-	return theChar;
+	if (code + offset > letters.size())
+		return '#';
+	else
+		return letters[code + offset];
 }
 
-static void DescribeLights( const QORenderer::ProgramCharacteristic& inCharacteristic,
-							std::ostream& ioStream )
+static std::string DescribeProgram(const QORenderer::ProgramCharacteristic& inSpec)
 {
-	ioStream << "L(";
-	const unsigned long kLightCount = inCharacteristic.mPattern.size();
-	unsigned long i;
-	for (i = 0; i < kLightCount; ++i)
+	std::ostringstream desc;
+
+	char illuminationLetter = '?';
+	switch (inSpec.mIlluminationType)
 	{
-		if (i > 0)
-		{
-			ioStream << ',';
-		}
-		ioStream << LightTypeLetter( inCharacteristic.mPattern[i] );
+	case kQ3IlluminationTypePhong:			illuminationLetter = 'P'; break;
+	case kQ3IlluminationTypeLambert:		illuminationLetter = 'L'; break;
+	case kQ3IlluminationTypeNULL:			illuminationLetter = '0'; break;
+	case kQ3IlluminationTypeNondirectional:	illuminationLetter = 'N'; break;
 	}
-	ioStream << ')';
-}
 
+	uint8_t flagNibble
+		= (inSpec.mIsUsingClippingPlane ? 0x01 : 0)
+		| (inSpec.mAngleAffectsAlpha ? 0x02 : 0)
+		| (inSpec.mIsCartoonish ? 0x04 : 0)
+		;
+
+	desc
+		<< /* "proj=" <<*/ GetLetter((int)inSpec.mProjectionType, "SAF")		// Standard, All-seeing, Fisheye
+		<< /*" intp=" <<*/ GetLetter(inSpec.mInterpolationStyle, "0PV")			// Flat, Pixel, Vertex
+		<< /*" fill=" <<*/ GetLetter(inSpec.mFillStyle, "FEP")					// Fill, Edge, Point
+		<< /*" geom=" <<*/ GetLetter(inSpec.mDimension, "PLT")					// Points, Lines, Triangles
+		<< /*" flag=" <<*/ GetLetter(flagNibble, "0123456789ABCDEF")
+		<< /*" fogc=" <<*/ GetLetter(inSpec.mFogModeCombined, "0LQEHP", 1)		// None, Linear, exponential sQuared, Exponential, Halfspace, Plane-based linear
+		<< /*" texa=" <<*/ GetLetter(inSpec.mTexturingMode, "x0TB", 1)			// Illegal, untextured, texture with alpha Test, texture with alpha Blending
+		<< /*" illu="	*/ '-'
+		<< illuminationLetter
+		;
+
+	for (QORenderer::ELightType lightType : inSpec.mPattern)
+		desc << GetLetter(lightType, "x0DPSLEC3", 1);
+
+	return desc.str();
+}
 
 static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& inProgramRec,
 										bool inHasGeometryShader,
@@ -826,7 +832,7 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 
 #if QUESA_DUMP_SHADERS
 	char path[256];
-	sprintf(path, "quesa-%07zx.frag", std::hash<std::string>{}(outSource) & 0x0FFFFFFFul);
+	sprintf(path, "quesa-%s.frag", DescribeProgram(inProgramRec).c_str());
 	std::ifstream inFile(path);
 	if (inFile.is_open())
 	{
@@ -837,6 +843,7 @@ static void BuildFragmentShaderSource(	const QORenderer::ProgramCharacteristic& 
 	{
 		printf("New fragment shader:\t%s\n", path);
 		std::ofstream outFile(path);
+		outFile << "// Desc: " << DescribeProgram(inProgramRec) << "\n";
 		outFile << outSource;
 	}
 #endif
@@ -1630,29 +1637,6 @@ void	QORenderer::PerPixelLighting::InitVertexShader()
 	}
 }
 
-static std::string DescribeProgram( const QORenderer::ProgramRec& inProgram )
-{
-	std::ostringstream desc;
-	DescribeLights( inProgram.mCharacteristic, desc );
-	desc << (inProgram.mCharacteristic.mTexturingMode != QORenderer::kTexturingModeOff? "T+" : "T-");
-	switch (inProgram.mCharacteristic.mIlluminationType)
-	{
-	case kQ3IlluminationTypePhong:
-		desc << "I=P";
-		break;
-	case kQ3IlluminationTypeLambert:
-		desc << "I=L";
-		break;
-	case kQ3IlluminationTypeNULL:
-		desc << "I=0";
-		break;
-	case kQ3IlluminationTypeNondirectional:
-		desc << "I=n";
-		break;
-	}
-	return desc.str();
-}
-
 /*!
 	@function	InitProgram
 	@abstract	Set up the main fragment shader and program.
@@ -1721,7 +1705,7 @@ void	QORenderer::PerPixelLighting::InitProgram()
 			GLuint vertexShader = ProgCache()->VertexShaderID( newProgram.mCharacteristic.mProjectionType );
 		
 			++sProgramCount;
-			std::string desc( DescribeProgram( newProgram ) );
+			std::string desc( DescribeProgram( newProgram.mCharacteristic ) );
 			//Q3_MESSAGE_FMT("Created program number %d, ID %u, of type %s",
 			//	sProgramCount, (unsigned int)newProgram.mProgram, desc.c_str() );
 
