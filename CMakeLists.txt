@@ -7,7 +7,7 @@ find_package(OpenGL REQUIRED)
 
 include_directories(
     ${SDL2_INCLUDE_DIRS}
-    ${OPENGL_INCLUDE_DIRS}
+    ${OPENGL_INCLUDE_DIR}
     Development/Source/Core/Geometry
     Development/Source/Core/Support
     Development/Source/Core/System
